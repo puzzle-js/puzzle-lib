@@ -36,7 +36,7 @@ describe('Module - Fragments', () => {
         expect(fragments).to.be.instanceof(Fragments);
     });
 
-    it('should log fragment information', function () {
+    it('should log fragment information', () => {
         const fragments = new Fragments();
         const fn = sinon.stub(Util, 'log');
         const variable = {

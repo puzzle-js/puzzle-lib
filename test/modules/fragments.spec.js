@@ -27,7 +27,7 @@ describe('Module - Fragments', () => {
         const fragments = new fragments_1.Fragments();
         chai_1.expect(fragments).to.be.instanceof(fragments_1.Fragments);
     });
-    it('should log fragment information', function () {
+    it('should log fragment information', () => {
         const fragments = new fragments_1.Fragments();
         const fn = sinon.stub(util_1.Util, 'log');
         const variable = {

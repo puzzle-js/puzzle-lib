@@ -5,7 +5,7 @@ import {LOG_COLORS} from "../enums";
 export interface IFragmentInfo {
     [fragmentName: string]: {
         [name: string]: any
-    }
+    };
 }
 
 export class Fragments extends Module {
