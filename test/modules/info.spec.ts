@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {JSDOM} from "jsdom";
-import {PuzzleJs} from "../../src/lib/puzzle";
-import {Info} from "../../src/lib/modules/info";
+import {PuzzleJs} from "../../src/puzzle";
+import {Info} from "../../src/modules/info";
 
 declare global {
     interface Window {

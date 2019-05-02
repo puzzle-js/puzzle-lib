@@ -1,11 +1,11 @@
 import {expect} from "chai";
 import {JSDOM} from "jsdom";
-import {PuzzleJs} from "../../src/lib/puzzle";
-import {Core} from "../../src/lib/core";
+import {PuzzleJs} from "../src/puzzle";
+import {Core} from "../src/core";
 import {createPageLibConfiguration} from "./mock";
 import * as faker from "faker";
-import {IPageLibAsset, IPageLibConfiguration, IPageLibDependency} from "../../src/lib/types";
-import {RESOURCE_LOADING_TYPE, RESOURCE_TYPE} from "../../src/lib/enums";
+import {IPageLibAsset, IPageLibConfiguration, IPageLibDependency} from "../src/types";
+import {RESOURCE_LOADING_TYPE, RESOURCE_TYPE} from "../src/enums";
 
 declare global {
     interface Window {

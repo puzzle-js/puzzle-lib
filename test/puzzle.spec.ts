@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {JSDOM} from "jsdom";
-import {PuzzleJs} from "../../src/lib/puzzle";
-import {EVENT} from "../../src/lib/enums";
+import {PuzzleJs} from "../src/puzzle";
+import {EVENT} from "../src/enums";
 import sinon from "sinon";
 import * as faker from "faker";
 

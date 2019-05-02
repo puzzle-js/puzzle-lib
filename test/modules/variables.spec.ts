@@ -1,10 +1,10 @@
 import {expect} from "chai";
 import {JSDOM} from "jsdom";
-import {PuzzleJs} from "../../src/lib/puzzle";
-import {Variables} from "../../src/lib/modules/variables";
+import {PuzzleJs} from "../../src/puzzle";
+import {Variables} from "../../src/modules/variables";
 import * as faker from "faker";
 import sinon from "sinon";
-import {Util} from "../../src/lib/util";
+import {Util} from "../../src/util";
 
 declare global {
     interface Window {

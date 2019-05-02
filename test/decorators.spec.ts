@@ -1,7 +1,7 @@
 import {JSDOM} from "jsdom";
-import {PuzzleJs} from "../../src/lib/puzzle";
-import {on} from "../../src/lib/decorators";
-import {EVENT} from "../../src/lib/enums";
+import {PuzzleJs} from "../src/puzzle";
+import {on} from "../src/decorators";
+import {EVENT} from "../src/enums";
 
 
 declare global {

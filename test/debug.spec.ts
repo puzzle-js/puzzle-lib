@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {PuzzleJs} from "../../src/lib/puzzle";
+import {PuzzleJs} from "../src/puzzle";
 import {JSDOM} from "jsdom";
 
 declare global {

@@ -1,8 +1,8 @@
 import {expect} from "chai";
 import {JSDOM} from "jsdom";
-import {PuzzleJs} from "../../src/lib/puzzle";
+import {PuzzleJs} from "../../src/puzzle";
 import sinon from "sinon";
-import {Analytics} from "../../src/lib/modules/analytics";
+import {Analytics} from "../../src/modules/analytics";
 
 declare global {
     interface Window {

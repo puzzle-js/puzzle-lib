@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {JSDOM} from "jsdom";
-import {Util} from "../../src/lib/util";
-import {PuzzleJs} from "../../src/lib/puzzle";
+import {Util} from "../src/util";
+import {PuzzleJs} from "../src/puzzle";
 import sinon from "sinon";
 import * as faker from "faker";
 

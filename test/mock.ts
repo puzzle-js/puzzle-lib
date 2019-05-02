@@ -1,4 +1,4 @@
-import {IPageLibConfiguration} from "../../src/lib/types";
+import {IPageLibConfiguration} from "../src/types";
 
 export const createPageLibConfiguration = (providedConfiguration?: object) => {
   return {
