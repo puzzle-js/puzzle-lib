@@ -1,0 +1,12 @@
+{
+  "name": "puzzle-lib",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "<emre.kul@trendyol.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5",
+    "webpack": "^4.30.0"
+  }
+}
