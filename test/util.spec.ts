@@ -58,7 +58,7 @@ describe('Module - Util', () => {
         expect(logStub.calledOnce).to.true;
     });
 
-    it('should crete table', function () {
+    it('should crete table',  () => {
         const logStub = sinon.stub(global.window.console, 'table');
         const object = faker.helpers.userCard();
 

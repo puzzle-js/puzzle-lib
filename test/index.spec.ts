@@ -27,7 +27,7 @@ describe('PuzzleJs Lib', () => {
     });
 
     it('should declare PuzzleJs under window', () => {
-        require("../../src/lib");
+        require("../src");
 
         expect(window.PuzzleJs).to.eq(PuzzleJs);
     });

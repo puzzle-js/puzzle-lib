@@ -1,6 +1,5 @@
 import {Module} from "../module";
 import {Util} from "../util";
-import {PuzzleJs} from "../puzzle";
 import {LOG_COLORS} from "../enums";
 
 export interface IFragmentInfo {

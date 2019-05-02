@@ -9,7 +9,7 @@ class Util {
         window.console.groupEnd();
     }
     static log(content, type = enums_1.LOG_TYPES.INFO, color = enums_1.LOG_COLORS.BLUE) {
-        const logConfig = color => ['%cPuzzleJs', `background: ${color}; color: white; padding: 2px 0.5em; ` + `border-radius: 0.5em;`];
+        const logConfig = (c) => ['%cPuzzleJs', `background: ${c}; color: white; padding: 2px 0.5em; ` + `border-radius: 0.5em;`];
         window.console[type](...logConfig(color), content);
     }
     static table(content) {

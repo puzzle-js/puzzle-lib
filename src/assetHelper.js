@@ -9,7 +9,7 @@ class AssetHelper {
         scriptTag.src = asset.link;
         scriptTag.defer = asset.defer || false;
         if (!asset.defer) {
-            loader = new Promise((resolve, reject) => {
+            loader = new Promise((resolve) => {
                 scriptTag.onload = () => {
                     resolve();
                 };
@@ -20,7 +20,7 @@ class AssetHelper {
     }
     static loadJsSeries(scripts) {
         for (let i = 0, p = Promise.resolve(); i < scripts.length; i++) {
-            p = p.then(_ => new Promise(resolve => {
+            p = p.then(() => new Promise(resolve => {
                 const assetLoading = AssetHelper.loadJs(scripts[i]);
                 if (!assetLoading) {
                     resolve();

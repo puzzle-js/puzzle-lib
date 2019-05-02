@@ -33,7 +33,7 @@ export class Analytics extends Module {
         'Connection Type': this.connectionInformation.effectiveType
       });
 
-      const fragmentsTableData = Analytics.fragments.reduce((fragmentMap, fragment) => {
+      const fragmentsTableData = Analytics.fragments.reduce((fragmentMap: any, fragment) => {
         fragmentMap[fragment.name] = {
           'Parsing Started': `${~~(fragment as any).loadTime[0].startTime} ms`,
           'Parse Duration': `${~~(fragment as any).loadTime[0].duration} ms`,
@@ -53,7 +53,7 @@ export class Analytics extends Module {
   }
 
   @on(EVENT.ON_FRAGMENT_RENDERED)
-  static fragment(name) {
+  static fragment(name: string) {
     const fragment = Analytics.fragments.find(fragment => fragment.name === name);
     performance.mark(`${TIME_LABELS.FRAGMENT_RENDER_END}${name}`);
     performance.measure(`${TIME_LABELS.FRAGMENT_MEASUREMENT}${name}`, `${TIME_LABELS.HTML_TRANSFER_STARTED}`, `${TIME_LABELS.FRAGMENT_RENDER_END}${name}`);

@@ -82,7 +82,7 @@ __decorate([
 __decorate([
     decorators_1.on(enums_1.EVENT.ON_FRAGMENT_RENDERED),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], Analytics, "fragment", null);
 exports.Analytics = Analytics;

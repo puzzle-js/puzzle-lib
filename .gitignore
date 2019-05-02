@@ -30,3 +30,4 @@ typings/
 # general
 .idea
 .DS_Store
+dist/

@@ -12,7 +12,7 @@ describe('PuzzleJs Debug Lib', () => {
         puzzle_1.PuzzleJs.clearListeners();
     });
     it('should declare PuzzleJs under window', () => {
-        require("../../src/lib/debug");
+        require("../src/debug");
         chai_1.expect(window.PuzzleJs).to.eq(puzzle_1.PuzzleJs);
     });
 });
