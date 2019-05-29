@@ -31,3 +31,7 @@ typings/
 .idea
 .DS_Store
 dist/
+
+# js files
+src/*.js
+test/*.js
