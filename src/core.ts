@@ -53,11 +53,11 @@ export class Core extends Module {
 
   @on(EVENT.ON_VARIABLES)
   static onVariables(fragmentName: string, configKey: string, configData: object) {
-    window[configKey] = configData;
+      (window as any)[configKey] = configData;
   }
 
   static createLoadQueue(assets: IPageLibAsset[]) {
-    let loadList: any = [];
+    const loadList: any = [];
 
     assets.forEach(asset => {
       if (!asset.preLoaded) {

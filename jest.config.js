@@ -8,8 +8,5 @@ module.exports = {
             lines: 69,
             statements: 67
         }
-    },
-    collectCoverageFrom: [
-        "src/**/*.ts",
-    ]
+    }
 };

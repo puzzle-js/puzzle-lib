@@ -8,19 +8,19 @@ import {IPageLibAsset, IPageLibConfiguration, IPageLibDependency} from "../src/t
 import {RESOURCE_LOADING_TYPE, RESOURCE_TYPE} from "../src/enums";
 
 declare global {
-    interface Window {
+    interface IWindow {
         [key: string]: any;
 
         PuzzleJs: PuzzleJs;
     }
 }
 
-export interface Global {
+export interface IGlobal {
     document: Document;
-    window: Window;
+    window: IWindow;
 }
 
-declare var global: Global;
+declare var global: IGlobal;
 
 describe('Module - Core', () => {
     beforeEach(() => {
@@ -57,12 +57,10 @@ describe('Module - Core', () => {
 
         Core.onVariables(fragmentName, variableName, windowModel);
 
-        console.log(window[variableName]);
-
-        expect(window[variableName]).to.deep.eq(windowModel);
+        expect((window as any)[variableName]).to.deep.eq(windowModel);
     });
 
-    it('should load fragment and replace its contents', function () {
+    it('should load fragment and replace its contents',  () => {
         const fragmentName = faker.random.word();
         const fragmentContent = faker.random.words();
         const fragmentContainerId = "fragment-container";
@@ -80,7 +78,7 @@ describe('Module - Core', () => {
         expect(global.window.document.body.innerHTML).to.eq(`<div id="${fragmentContainerId}">${fragmentContent}</div>`);
     });
 
-    it('should create true load queue for js assets', function () {
+    it('should create true load queue for js assets',  () => {
         const assets = [
             {
                 name: 'bundle1',

@@ -5,22 +5,11 @@ import {PuzzleJs} from "../src/puzzle";
 import sinon from "sinon";
 import * as faker from "faker";
 
-declare global {
-    interface Window {
-        PuzzleJs: PuzzleJs;
-    }
-}
-
-export interface Global {
-    document: Document;
-    window: Window;
-}
-
-declare var global: Global;
+declare var global: any;
 
 describe('Module - Util', () => {
     beforeEach(() => {
-        global.window = (new JSDOM(``, {runScripts: "outside-only"})).window;
+        global.window = (new JSDOM(``, {runScripts: "outside-only"})).window as any;
     });
 
     afterEach(() => {

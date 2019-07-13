@@ -34,4 +34,6 @@ dist/
 
 # js files
 src/*.js
+src/**/*.js
 test/*.js
+test/**/*.js

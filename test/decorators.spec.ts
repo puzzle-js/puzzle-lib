@@ -5,17 +5,17 @@ import {EVENT} from "../src/enums";
 
 
 declare global {
-    interface Window {
+    interface IWindow {
         PuzzleJs: PuzzleJs;
     }
 }
 
-export interface Global {
+export interface IGlobal {
     document: Document;
-    window: Window;
+    window: IWindow;
 }
 
-declare var global: Global;
+declare var global: IGlobal;
 
 describe('PuzzleLib Decorators', () => {
     beforeEach(() => {

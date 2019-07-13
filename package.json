@@ -5,7 +5,7 @@
   "author": "<emre.kul@trendyol.com>",
   "license": "MIT",
   "scripts": {
-    "build": "TS_NODE_FILES=true node_modules/.bin/tsc && node_modules/.bin/webpack",
+    "build": "TS_NODE_FILES=true node_modules/.bin/webpack --config webpack.config.js",
     "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 node_modules/.bin/jest --coverage --silent",
     "test:watch": "NODE_TLS_REJECT_UNAUTHORIZED=0 node_modules/.bin/jest --coverage --watch --silent --runInBand",
     "lint": "./node_modules/.bin/tslint -p ./tsconfig.json",
@@ -26,6 +26,7 @@
     "ts-loader": "^5.4.5",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5",
-    "webpack": "^4.30.0"
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.4"
   }
 }
