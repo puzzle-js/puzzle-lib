@@ -1,3 +1,9 @@
 # puzzle-lib
-## this repo contains the client code of puzzle.js
 
+Browser bindings of PuzzleJs
+
+[![CircleCI](https://circleci.com/gh/puzzle-js/puzzle-lib/tree/master.svg?style=svg)](https://circleci.com/gh/puzzle-js/puzzle-lib/tree/master) 
+[![npm](https://img.shields.io/npm/dt/@puzzle-js/puzzle-lib.svg)](https://www.npmjs.com/package/@puzzle-js/lib) 
+[![npm](https://img.shields.io/npm/v/@puzzle-js/puzzle-lib.svg)](https://www.npmjs.com/package/@puzzle-js/lib) 
+[![Known Vulnerabilities](https://snyk.io/test/github/puzzle-js/puzzle-lib/badge.svg)](https://snyk.io/test/github/puzzle-js/puzzle-lib)
+[![codecov](https://codecov.io/gh/puzzle-js/puzzle-lib/branch/master/graph/badge.svg)](https://codecov.io/gh/puzzle-js/puzzle-lib) 
