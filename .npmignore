@@ -1,3 +1,9 @@
 test
 .circleci
 coverage
+src
+node_modules
+tsconfig.json
+tslint.json
+webpack.config.js
+jest.config.js
