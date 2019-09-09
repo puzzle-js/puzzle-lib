@@ -1,6 +1,6 @@
 {
-  "name": "@puzzle-microfrontends/lib",
-  "version": "1.1.1",
+  "name": "puzzle-microfrontends-lib",
+  "version": "1.0.0",
   "author": "<emre.kul@trendyol.com>",
   "license": "MIT",
   "repository": {
