@@ -1,8 +1,7 @@
+import {expect} from "chai";
 import {JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
-import {on} from "../src/decorators";
-import {EVENT} from "../src/enums";
-
+import {Info} from "../src/modules/info";
 
 declare global {
     interface Window {
@@ -17,7 +16,7 @@ export interface Global {
 
 declare var global: Global;
 
-describe('PuzzleLib Decorators', () => {
+describe('Module - Info', () => {
     beforeEach(() => {
         global.window = (new JSDOM(``, {runScripts: "outside-only"})).window;
     });
@@ -27,14 +26,9 @@ describe('PuzzleLib Decorators', () => {
         PuzzleJs.clearListeners();
     });
 
-    it('should register for events on PuzzleJs', (done) => {
-        class Test {
-            @on(EVENT.ON_PAGE_LOAD)
-            static pageLoaded() {
-                done();
-            }
-        }
+    it('should create new Info', () => {
+        const info = new Info();
 
-        PuzzleJs.emit(EVENT.ON_PAGE_LOAD);
+        expect(info).to.be.instanceof(Info);
     });
 });

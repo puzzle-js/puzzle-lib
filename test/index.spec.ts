@@ -3,18 +3,18 @@ import {PuzzleJs} from "../src/puzzle";
 import {JSDOM} from "jsdom";
 
 declare global {
-    interface IWindow {
+    interface Window {
         PuzzleJs: PuzzleJs;
     }
 }
 
 
-export interface IGlobal {
+export interface Global {
     document: Document;
-    window: IWindow;
+    window: Window;
 }
 
-declare var global: IGlobal;
+declare var global: Global;
 
 describe('PuzzleJs Lib', () => {
     beforeEach(() => {

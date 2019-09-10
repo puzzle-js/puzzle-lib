@@ -1,8 +1,8 @@
+import {expect} from "chai";
 import {JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
-import {on} from "../src/decorators";
-import {EVENT} from "../src/enums";
-
+import sinon from "sinon";
+import {Analytics} from "../src/modules/analytics";
 
 declare global {
     interface Window {
@@ -17,24 +17,20 @@ export interface Global {
 
 declare var global: Global;
 
-describe('PuzzleLib Decorators', () => {
+describe('Module - Fragments', () => {
     beforeEach(() => {
         global.window = (new JSDOM(``, {runScripts: "outside-only"})).window;
     });
 
     afterEach(() => {
+        sinon.restore();
         delete global.window;
         PuzzleJs.clearListeners();
     });
 
-    it('should register for events on PuzzleJs', (done) => {
-        class Test {
-            @on(EVENT.ON_PAGE_LOAD)
-            static pageLoaded() {
-                done();
-            }
-        }
+    it('should create new Analytics', () => {
+        const fragments = new Analytics();
 
-        PuzzleJs.emit(EVENT.ON_PAGE_LOAD);
+        expect(fragments).to.be.instanceof(Analytics);
     });
 });

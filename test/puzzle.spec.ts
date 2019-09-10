@@ -5,12 +5,12 @@ import {EVENT} from "../src/enums";
 import sinon from "sinon";
 import * as faker from "faker";
 
-export interface IGlobal {
+export interface Global {
     document: Document;
     window: Window;
 }
 
-declare var global: IGlobal;
+declare var global: Global;
 
 describe('PuzzleJs', () => {
     beforeEach(() => {
@@ -22,7 +22,7 @@ describe('PuzzleJs', () => {
         PuzzleJs.clearListeners();
     });
 
-    it('should has a method for injecting modules',  () => {
+    it('should has a method for injecting modules', function () {
         class Module {
             constructor() {
             }
@@ -33,10 +33,10 @@ describe('PuzzleJs', () => {
 
         PuzzleJs.inject({module: Module});
 
-        expect((PuzzleJs as any)['module'].m).to.eq(Module.m);
+        expect((<any>PuzzleJs)['module'].m).to.eq(Module.m);
     });
 
-    it('should register listeners', () => {
+    it('should register listeners', function () {
         const fn = sinon.spy();
         const variable = faker.helpers.createCard();
 

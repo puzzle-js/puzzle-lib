@@ -5,11 +5,22 @@ import {PuzzleJs} from "../src/puzzle";
 import sinon from "sinon";
 import * as faker from "faker";
 
-declare var global: any;
+declare global {
+    interface Window {
+        PuzzleJs: PuzzleJs;
+    }
+}
+
+export interface Global {
+    document: Document;
+    window: Window;
+}
+
+declare var global: Global;
 
 describe('Module - Util', () => {
     beforeEach(() => {
-        global.window = (new JSDOM(``, {runScripts: "outside-only"})).window as any;
+        global.window = (new JSDOM(``, {runScripts: "outside-only"})).window;
     });
 
     afterEach(() => {
@@ -47,7 +58,7 @@ describe('Module - Util', () => {
         expect(logStub.calledOnce).to.true;
     });
 
-    it('should crete table',  () => {
+    it('should crete table', function () {
         const logStub = sinon.stub(global.window.console, 'table');
         const object = faker.helpers.userCard();
 
