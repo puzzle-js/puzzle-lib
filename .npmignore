@@ -1,7 +1,6 @@
 test
 .circleci
 coverage
-src
 node_modules
 tsconfig.json
 tslint.json

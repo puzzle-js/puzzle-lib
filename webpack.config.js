@@ -8,7 +8,7 @@ module.exports = {
  mode: "production",
  output: {
   filename: "[name].min.js",
-  path: path.join(__dirname, './dist'),
+  path: path.join(__dirname, './public'),
  },
  resolve: {
   extensions: [".ts", ".tsx", ".js"]

@@ -39,7 +39,8 @@ jobs:
             - package.json
             - package-lock.json
             - .npmignore
-            - dist
+            - public
+            - src
   deploy:
     <<: *defaults
     steps:
