@@ -1,7 +1,7 @@
 {
   "name": "@puzzle-js/client-lib",
-  "main": "public/puzzle.min.js",
-  "version": "1.0.6",
+  "main": "dist/public/puzzle.min.js",
+  "version": "1.0.7",
   "author": "<emre.kul@trendyol.com>",
   "license": "MIT",
   "repository": {
@@ -9,7 +9,7 @@
     "url": "https://github.com/puzzle-js/puzzle-lib"
   },
   "scripts": {
-    "build": "TS_NODE_FILES=true node_modules/.bin/webpack --config webpack.config.js",
+    "build": "TS_NODE_FILES=true node_modules/.bin/webpack --config webpack.config.js && cp -r public dist/public && ./node_modules/.bin/tsc",
     "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 node_modules/.bin/jest --coverage --silent",
     "test:watch": "NODE_TLS_REJECT_UNAUTHORIZED=0 node_modules/.bin/jest --coverage --watch --silent --runInBand",
     "lint": "./node_modules/.bin/tslint -p ./tsconfig.json",
