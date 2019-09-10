@@ -41,6 +41,7 @@ jobs:
             - .npmignore
             - public
             - src
+            - dist
   deploy:
     <<: *defaults
     steps:
