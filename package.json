@@ -1,7 +1,7 @@
 {
   "name": "@puzzle-js/client-lib",
   "main": "dist/public/puzzle.min.js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": "<emre.kul@trendyol.com>",
   "license": "MIT",
   "repository": {
