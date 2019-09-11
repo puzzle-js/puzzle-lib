@@ -3,11 +3,12 @@ import {IPageLibAsset} from "./types";
 export class AssetHelper {
   static loadJs(asset: IPageLibAsset): Promise<any> | null {
     let loader: Promise<any> | null = null;
-    const scriptTag: any = document.createElement('script');
+    const scriptTag: any = window.document.createElement('script');
     scriptTag.type = 'text/javascript';
     scriptTag.attributes['puzzle-asset'] = asset.name;
     scriptTag.src = asset.link;
     scriptTag.defer = asset.defer || false;
+    scriptTag.crossOrigin = "anonymous";
 
     if (!asset.defer) {
       loader = new Promise((resolve) => {
@@ -36,9 +37,5 @@ export class AssetHelper {
         }
       ));
     }
-  }
-
-  static loadCSS() {
-
   }
 }
