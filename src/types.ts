@@ -31,7 +31,7 @@ export interface IPageFragmentConfig {
   name: string;
   chunked: boolean;
   clientAsync: boolean;
-  attributes: Array<{ [name: string]: string }>
+  attributes: { [name: string]: string }
 }
 
 export interface IPageLibDependency {
