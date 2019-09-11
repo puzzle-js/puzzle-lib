@@ -35,6 +35,7 @@ export class Core extends Module {
 
   @on(EVENT.ON_FRAGMENT_RENDERED)
   static loadAssetsOnFragment(fragmentName: string) {
+    const fragment = Core.__pageConfiguration.fragments.find(i => i.name === fragmentName);
     const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragmentName && asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER && !asset.preLoaded);
 
     const scripts = Core.createLoadQueue(onFragmentRenderAssets);
@@ -51,9 +52,17 @@ export class Core extends Module {
     AssetHelper.loadJsSeries(scripts);
   }
 
+  @on(EVENT.ON_ASYNC_COMPONENT_RENDERED)
+  static asyncComponentRender(fragmentName: string) {
+    const fragment = Core.__pageConfiguration.fragments.find(i => i.name === fragmentName);
+    if (fragment) {
+      console.log(fragment);
+    }
+  }
+
   @on(EVENT.ON_VARIABLES)
   static onVariables(fragmentName: string, configKey: string, configData: object) {
-      (window as any)[configKey] = configData;
+    (window as any)[configKey] = configData;
   }
 
   static createLoadQueue(assets: IPageLibAsset[]) {

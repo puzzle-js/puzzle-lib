@@ -30,6 +30,8 @@ export interface ICustomPageAsset {
 export interface IPageFragmentConfig {
   name: string;
   chunked: boolean;
+  clientAsync: boolean;
+  attributes: { [name: string]: string }
 }
 
 export interface IPageLibDependency {

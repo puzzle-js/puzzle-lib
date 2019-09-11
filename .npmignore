@@ -6,3 +6,4 @@ tsconfig.json
 tslint.json
 webpack.config.js
 jest.config.js
+src
