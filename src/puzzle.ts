@@ -4,10 +4,7 @@ import {IEventListener} from "./types";
 
 export class PuzzleJs {
   [module: string]: any;
-
-  static PACKAGE_VERSION = '';
-  static DEPENDENCIES = {};
-  static LOGO = '';
+  static LOGO = 'https://image.ibb.co/jM29on/puzzlelogo.png';
 
   private static __LISTENERS: IEventListener = {};
 
