@@ -54,8 +54,45 @@ export class Core extends Module {
   @on(EVENT.ON_PAGE_LOAD)
   static asyncComponentRender() {
     const asyncFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync);
-    
-    console.log(asyncFragments);
+
+    asyncFragments.forEach(fragment => {
+
+      const attributes = Object.assign(location.search.slice(1).split('&').reduce((dict: { [name: string]: string }, i) => {
+        const [key, value] = i.split('=');
+        if (typeof value !== "undefined") {
+          dict[key] = value;
+        }
+        return dict;
+      }, {}), fragment.attributes);
+
+      const queryString = Object.keys(attributes).reduce((query: string, key: string) => `${query}&${key}=${attributes[key]}`, '?__renderMode=stream');
+
+      fetch(`${fragment.source}${location.pathname}${queryString}`).then(res => {
+        return res.json()
+      })
+        .then(res => {
+          Object.keys(res).forEach(key => {
+            if (!key.startsWith('$')) {
+              const container = document.querySelector(key === 'main' ? `[puzzle-fragment="${fragment.name}"]` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${key}"]`);
+              if (container) {
+                this.setInnerHTML(container, res[key]);
+              }
+            }
+          });
+          this.loadAssetsOnFragment(fragment.name);
+        })
+    });
+  }
+
+  private static setInnerHTML(elm: any, html: any) {
+    elm.innerHTML = html;
+    Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
+      const newScript = document.createElement("script");
+      Array.from(oldScript.attributes)
+        .forEach((attr: any) => newScript.setAttribute(attr.name, attr.value));
+      newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
   }
 
   @on(EVENT.ON_VARIABLES)
