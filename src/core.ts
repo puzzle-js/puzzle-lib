@@ -67,7 +67,9 @@ export class Core extends Module {
 
       const queryString = Object.keys(attributes).reduce((query: string, key: string) => `${query}&${key}=${attributes[key]}`, '?__renderMode=stream');
 
-      fetch(`${fragment.source}${location.pathname}${queryString}`).then(res => {
+      fetch(`${fragment.source}${location.pathname}${queryString}`, {
+        credentials: 'include'
+      }).then(res => {
         return res.json()
       })
         .then(res => {
