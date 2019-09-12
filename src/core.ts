@@ -5,7 +5,7 @@ import {on} from "./decorators";
 import {AssetHelper} from "./assetHelper";
 
 export class Core extends Module {
-  private static observer: IntersectionObserver;
+  private static observer: IntersectionObserver | undefined;
 
   static get _pageConfiguration() {
     return this.__pageConfiguration;
@@ -22,10 +22,12 @@ export class Core extends Module {
   static config(pageConfiguration: string) {
     Core.__pageConfiguration = JSON.parse(pageConfiguration) as IPageLibConfiguration;
 
-    const asyncFragments = Core.__pageConfiguration.fragments.some(i => i.clientAsync);
+    if (this.isIntersectionObserverSupported()) {
+      const asyncFragments = Core.__pageConfiguration.fragments.some(i => i.clientAsync);
 
-    if (asyncFragments) {
-      this.observer = new IntersectionObserver(this.onIntersection.bind(this));
+      if (asyncFragments) {
+        this.observer = new IntersectionObserver(this.onIntersection.bind(this));
+      }
     }
   }
 
@@ -65,10 +67,14 @@ export class Core extends Module {
     const asyncFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync);
 
     asyncFragments.forEach(fragment => {
-      const container = document.querySelector(this.getFragmentContainerSelector(fragment, 'main'));
+      if (this.observer) {
+        const container = document.querySelector(this.getFragmentContainerSelector(fragment, 'main'));
 
-      if(container) {
-        this.observer.observe(container);
+        if (container) {
+          this.observer.observe(container);
+        }
+      } else {
+        this.asyncLoadFragment(fragment);
       }
     });
   }
@@ -187,5 +193,11 @@ export class Core extends Module {
         return fragment;
       }
     });
+  }
+
+  private static isIntersectionObserverSupported() {
+    return 'IntersectionObserver' in window
+      && 'IntersectionObserverEntry' in window
+      && 'intersectionRatio' in window.IntersectionObserverEntry.prototype;
   }
 }
