@@ -1,10 +1,12 @@
 import {Module} from "./module";
 import {EVENT, RESOURCE_LOADING_TYPE} from "./enums";
-import {IPageLibAsset, IPageLibConfiguration} from "./types";
+import {IPageFragmentConfig, IPageLibAsset, IPageLibConfiguration} from "./types";
 import {on} from "./decorators";
 import {AssetHelper} from "./assetHelper";
 
 export class Core extends Module {
+  private static observer: IntersectionObserver;
+
   static get _pageConfiguration() {
     return this.__pageConfiguration;
   }
@@ -13,11 +15,18 @@ export class Core extends Module {
     this.__pageConfiguration = value;
   }
 
+  // tslint:disable-next-line:variable-name
   private static __pageConfiguration: IPageLibConfiguration;
 
   @on(EVENT.ON_CONFIG)
   static config(pageConfiguration: string) {
     Core.__pageConfiguration = JSON.parse(pageConfiguration) as IPageLibConfiguration;
+
+    const asyncFragments = Core.__pageConfiguration.fragments.some(i => i.clientAsync);
+
+    if (asyncFragments) {
+      this.observer = new IntersectionObserver(this.onIntersection.bind(this));
+    }
   }
 
   /**
@@ -56,44 +65,58 @@ export class Core extends Module {
     const asyncFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync);
 
     asyncFragments.forEach(fragment => {
+      const container = document.querySelector(this.getFragmentContainerSelector(fragment, 'main'));
 
-      const attributes = Object.assign(location.search.slice(1).split('&').reduce((dict: { [name: string]: string }, i) => {
-        const [key, value] = i.split('=');
-        if (typeof value !== "undefined") {
-          dict[key] = value;
-        }
-        return dict;
-      }, {}), fragment.attributes);
-
-      const queryString = Object.keys(attributes).reduce((query: string, key: string) => `${query}&${key}=${attributes[key]}`, '?__renderMode=stream');
-
-      fetch(`${fragment.source}${location.pathname}${queryString}`, {
-        credentials: 'include'
-      }).then(res => {
-        return res.json();
-      })
-        .then(res => {
-          if (res['$model']) {
-            Object.keys(res['$model']).forEach(key => {
-              (window as any)[key] = res['$model'][key];
-            });
-          }
-
-          Object.keys(res).forEach(key => {
-            if (!key.startsWith('$')) {
-              const container = document.querySelector(key === 'main' ? `[puzzle-fragment="${fragment.name}"]` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${key}"]`);
-              if (container) {
-                this.setInnerHTML(container, res[key]);
-              }
-            }
-          });
-
-          this.loadAssetsOnFragment(fragment.name);
-        });
+      if(container) {
+        this.observer.observe(container);
+      }
     });
   }
 
-  private static setInnerHTML(elm: any, html: any) {
+  private static asyncLoadFragment(fragment: IPageFragmentConfig) {
+    const queryString = this.prepareQueryString(fragment.attributes);
+    fetch(`${fragment.source}${location.pathname}${queryString}`, {
+      credentials: 'include'
+    }).then(res => {
+      return res.json();
+    })
+      .then(res => {
+        if (res['$model']) {
+          Object.keys(res['$model']).forEach(key => {
+            (window as any)[key] = res['$model'][key];
+          });
+        }
+
+        Object.keys(res).forEach(key => {
+          if (!key.startsWith('$')) {
+            const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
+            if (container) {
+              this.setEvalInnerHtml(container, res[key]);
+            }
+          }
+        });
+
+        this.loadAssetsOnFragment(fragment.name);
+      });
+  }
+
+  private static getFragmentContainerSelector(fragment: IPageFragmentConfig, partial: string) {
+    return partial === "main" ? `[puzzle-fragment="${fragment.name}"]` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${partial}"]`;
+  }
+
+  private static prepareQueryString(fragmentAttributes: Record<string, string>) {
+    const attributes = Object.assign(location.search.slice(1).split('&').reduce((dict: { [name: string]: string }, i) => {
+      const [key, value] = i.split('=');
+      if (typeof value !== "undefined") {
+        dict[key] = value;
+      }
+      return dict;
+    }, {}), fragmentAttributes);
+
+    return Object.keys(attributes).reduce((query: string, key: string) => `${query}&${key}=${attributes[key]}`, '?__renderMode=stream');
+  }
+
+  private static setEvalInnerHtml(elm: any, html: any) {
     elm.innerHTML = html;
     Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
       const newScript = document.createElement("script");
@@ -117,16 +140,18 @@ export class Core extends Module {
         asset.preLoaded = true;
         asset.defer = true;
 
-        asset.dependent && asset.dependent.forEach((dependencyName) => {
-          const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
-          const dependencyContent = dependency[0];
-          if (dependencyContent && !dependencyContent.preLoaded) {
-            if (loadList.indexOf(dependencyContent) === -1) {
-              loadList.push(dependencyContent);
-              dependencyContent.preLoaded = true;
+        if (asset.dependent) {
+          asset.dependent.forEach((dependencyName) => {
+            const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
+            const dependencyContent = dependency[0];
+            if (dependencyContent && !dependencyContent.preLoaded) {
+              if (loadList.indexOf(dependencyContent) === -1) {
+                loadList.push(dependencyContent);
+                dependencyContent.preLoaded = true;
+              }
             }
-          }
-        });
+          });
+        }
 
         if (loadList.indexOf(asset) === -1) {
           loadList.push(asset);
@@ -147,5 +172,19 @@ export class Core extends Module {
     const r = z.innerHTML;
     z.parentNode.removeChild(z);
     window.document.querySelector(containerSelector)!.innerHTML = r;
+  }
+
+  private static onIntersection(changes: IntersectionObserverEntry[], observer: IntersectionObserver) {
+    changes.forEach(change => {
+      if (change.isIntersecting) {
+        const target = change.target;
+        const fragmentName = target.getAttribute('puzzle-fragment');
+        const fragment = Core.__pageConfiguration.fragments.find(i => fragmentName);
+        if (fragment) {
+          this.asyncLoadFragment(fragment);
+        }
+        observer.unobserve(target);
+      }
+    });
   }
 }
