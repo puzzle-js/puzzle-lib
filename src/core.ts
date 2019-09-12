@@ -142,25 +142,28 @@ export class Core extends Module {
     const loadList: any = [];
 
     assets.forEach(asset => {
-      if (!asset.preLoaded) {
-        asset.preLoaded = true;
-        asset.defer = true;
+      const fragment = Core.__pageConfiguration.fragments.find(i => i.name === asset.fragment);
+      if (fragment && !fragment.clientAsync) {
+        if (!asset.preLoaded) {
+          asset.preLoaded = true;
+          asset.defer = true;
 
-        if (asset.dependent) {
-          asset.dependent.forEach((dependencyName) => {
-            const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
-            const dependencyContent = dependency[0];
-            if (dependencyContent && !dependencyContent.preLoaded) {
-              if (loadList.indexOf(dependencyContent) === -1) {
-                loadList.push(dependencyContent);
-                dependencyContent.preLoaded = true;
+          if (asset.dependent) {
+            asset.dependent.forEach((dependencyName) => {
+              const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
+              const dependencyContent = dependency[0];
+              if (dependencyContent && !dependencyContent.preLoaded) {
+                if (loadList.indexOf(dependencyContent) === -1) {
+                  loadList.push(dependencyContent);
+                  dependencyContent.preLoaded = true;
+                }
               }
-            }
-          });
-        }
+            });
+          }
 
-        if (loadList.indexOf(asset) === -1) {
-          loadList.push(asset);
+          if (loadList.indexOf(asset) === -1) {
+            loadList.push(asset);
+          }
         }
       }
     });
