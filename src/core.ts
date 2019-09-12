@@ -102,7 +102,9 @@ export class Core extends Module {
           }
         });
 
-        this.loadAssetsOnFragment(fragment.name);
+        const fragmentAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragment.name);
+        const scripts = Core.createLoadQueue(fragmentAssets, true);
+        AssetHelper.loadJsSeries(scripts);
       });
   }
 
@@ -138,12 +140,12 @@ export class Core extends Module {
     (window as any)[configKey] = configData;
   }
 
-  static createLoadQueue(assets: IPageLibAsset[]) {
+  static createLoadQueue(assets: IPageLibAsset[], asyncQueue?: boolean) {
     const loadList: any = [];
 
     assets.forEach(asset => {
       const fragment = Core.__pageConfiguration.fragments.find(i => i.name === asset.fragment);
-      if (fragment && !fragment.clientAsync) {
+      if (asyncQueue || (fragment && !fragment.clientAsync)) {
         if (!asset.preLoaded) {
           asset.preLoaded = true;
           asset.defer = true;
