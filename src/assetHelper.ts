@@ -4,7 +4,7 @@ export class AssetHelper {
   static loadJs(asset: IPageLibAsset): Promise<any> | null {
     let loader: Promise<any> | null = null;
     const scriptTag: any = window.document.createElement('script');
-    if (!document.querySelector(`[puzzle-asset="${asset.name}"]`)) {
+    if (!window.document.querySelector(`[puzzle-asset="${asset.name}"]`)) {
       scriptTag.type = 'text/javascript';
       scriptTag.attributes['puzzle-asset'] = asset.name;
       scriptTag.src = asset.link;

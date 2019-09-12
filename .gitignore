@@ -37,3 +37,5 @@ src/*.js
 src/**/*.js
 test/*.js
 test/**/*.js
+
+public
