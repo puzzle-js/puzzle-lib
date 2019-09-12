@@ -29,7 +29,6 @@ export class AssetHelper {
 
   static loadJsSeries(scripts: IPageLibAsset[]) {
     for (let i = 0, p: any = Promise.resolve(); i < scripts.length; i++) {
-      console.log(scripts[i], 'line')
       p = p.then(() => new Promise(resolve => {
           const assetLoading = AssetHelper.loadJs(scripts[i]);
           if (!assetLoading) {
