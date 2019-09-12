@@ -70,9 +70,15 @@ export class Core extends Module {
       fetch(`${fragment.source}${location.pathname}${queryString}`, {
         credentials: 'include'
       }).then(res => {
-        return res.json()
+        return res.json();
       })
         .then(res => {
+          if (res['$model']) {
+            Object.keys(res['$model']).forEach(key => {
+              (window as any)[key] = res['$model'][key];
+            });
+          }
+
           Object.keys(res).forEach(key => {
             if (!key.startsWith('$')) {
               const container = document.querySelector(key === 'main' ? `[puzzle-fragment="${fragment.name}"]` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${key}"]`);
@@ -81,8 +87,9 @@ export class Core extends Module {
               }
             }
           });
+
           this.loadAssetsOnFragment(fragment.name);
-        })
+        });
     });
   }
 
