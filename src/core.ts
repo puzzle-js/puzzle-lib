@@ -186,7 +186,7 @@ export class Core extends Module {
   }
 
   private static onIntersection(changes: IntersectionObserverEntry[], observer: IntersectionObserver) {
-    changes.some(change => {
+    changes.forEach(change => {
       if (change.isIntersecting) {
         const target = change.target;
         const fragmentName = target.getAttribute('puzzle-fragment');
@@ -195,7 +195,6 @@ export class Core extends Module {
           this.asyncLoadFragment(fragment);
           observer.unobserve(target);
         }
-        return fragment;
       }
     });
   }
