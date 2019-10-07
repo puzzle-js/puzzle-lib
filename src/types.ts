@@ -31,7 +31,6 @@ export interface IPageFragmentConfig {
   name: string;
   chunked: boolean;
   clientAsync: boolean;
-  disabled: boolean;
   attributes: { [name: string]: string };
   source: string | undefined;
 }
