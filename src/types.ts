@@ -32,7 +32,7 @@ export interface IPageFragmentConfig {
   name: string;
   chunked: boolean;
   clientAsync: boolean;
-  attributes: { [name: string]: string };
+  attributes: { [name: string]: string, if: string };
   source: string | undefined;
 }
 

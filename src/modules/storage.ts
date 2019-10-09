@@ -20,7 +20,7 @@ export class Storage extends Module {
 
     static async printApplicationCacheInfo() {
         const cacheNames = await caches.keys();
-        let storageList: { [key: string]: any } = {
+        const storageList: { [key: string]: any } = {
             total: 0
         };
 

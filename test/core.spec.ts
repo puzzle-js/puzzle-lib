@@ -3,9 +3,13 @@ import {JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
 import {Core} from "../src/core";
 import {createPageLibConfiguration} from "./mock";
+import sinon from "sinon";
+import {AssetHelper} from "../src/assetHelper";
 import * as faker from "faker";
 import {IPageLibAsset, IPageLibConfiguration, IPageLibDependency} from "../src/types";
 import {RESOURCE_LOADING_TYPE, RESOURCE_TYPE} from "../src/enums";
+
+const sandbox = sinon.createSandbox();
 
 declare global {
   interface Window {
@@ -25,6 +29,7 @@ declare var global: Global;
 describe('Module - Core', () => {
   beforeEach(() => {
     global.window = (new JSDOM(``, {runScripts: "outside-only"})).window;
+    sandbox.verifyAndRestore();
   });
 
   afterEach(() => {
@@ -163,5 +168,44 @@ describe('Module - Core', () => {
 
         expect(queue).to.deep.eq(
           []);
+    });
+
+    it('should create true load queue for js assets excluding conditional fragments', function () {
+        const assets = [
+            {
+                name: 'bundle1',
+                dependent: ['vendor1'],
+                preLoaded: false,
+                link: 'bundle1.js',
+                fragment: 'test',
+                loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
+                type: RESOURCE_TYPE.JS
+            }
+        ] as IPageLibAsset[];
+        const dependencies = [
+            {
+                name: 'vendor1',
+                link: 'vendor1.js',
+                preLoaded: false
+            }
+        ] as IPageLibDependency[];
+        const config = {
+            dependencies,
+            assets,
+            fragments: [{
+                name: 'test',
+                attributes: {
+                    if: "true"
+                }
+            }],
+            page: 'page'
+        } as IPageLibConfiguration;
+
+        const mockLoadJsSeries = sandbox.mock(AssetHelper);
+
+        Core.config(JSON.stringify(config));
+        Core.pageLoaded();
+
+        mockLoadJsSeries.expects("loadJsSeries").calledWith([]);
     });
 });

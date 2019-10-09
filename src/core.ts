@@ -2,7 +2,7 @@ import {Module} from "./module";
 import {EVENT, RESOURCE_LOADING_TYPE} from "./enums";
 import {IPageFragmentConfig, IPageLibAsset, IPageLibConfiguration} from "./types";
 import {on} from "./decorators";
-import {AssetHelper} from "./assetHelper";
+import { AssetHelper } from "./assetHelper";
 
 export class Core extends Module {
   private static observer: IntersectionObserver | undefined;
@@ -56,11 +56,10 @@ export class Core extends Module {
   @on(EVENT.ON_PAGE_LOAD)
   static pageLoaded() {
     const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => {
-      const fragment = Core.__pageConfiguration.fragments.find(fragment => fragment.name === asset.fragment);
-      if(fragment){
-        return asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && fragment.attributes.if !== "true" && !asset.preLoaded;
+      if(asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded) {
+        const fragment = Core.__pageConfiguration.fragments.find(fragment => fragment.name === asset.fragment);
+        return fragment && fragment.attributes.if !== "true";
       }
-      return asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded;
     });
 
     const scripts = Core.createLoadQueue(onFragmentRenderAssets);
