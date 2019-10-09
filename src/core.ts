@@ -60,6 +60,7 @@ export class Core extends Module {
         const fragment = Core.__pageConfiguration.fragments.find(fragment => fragment.name === asset.fragment);
         return fragment && fragment.attributes.if !== "false";
       }
+      return false;
     });
 
     const scripts = Core.createLoadQueue(onFragmentRenderAssets);
