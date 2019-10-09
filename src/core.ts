@@ -58,7 +58,7 @@ export class Core extends Module {
     const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => {
       if(asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded) {
         const fragment = Core.__pageConfiguration.fragments.find(fragment => fragment.name === asset.fragment);
-        return fragment && fragment.attributes.if !== "true";
+        return fragment && fragment.attributes.if !== "false";
       }
     });
 

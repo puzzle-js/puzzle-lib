@@ -195,7 +195,7 @@ describe('Module - Core', () => {
             fragments: [{
                 name: 'test',
                 attributes: {
-                    if: "true"
+                    if: "false"
                 }
             }],
             page: 'page'
