@@ -18,7 +18,6 @@ export interface IPageLibAsset {
   link: string;
   preLoaded: boolean;
   defer?: boolean;
-  if?: boolean;
 }
 
 export interface ICustomPageAsset {
@@ -32,7 +31,7 @@ export interface IPageFragmentConfig {
   name: string;
   chunked: boolean;
   clientAsync: boolean;
-  attributes: { [name: string]: string, if: string };
+  attributes: { [name: string]: string };
   source: string | undefined;
 }
 

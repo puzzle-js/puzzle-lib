@@ -196,7 +196,10 @@ describe('Module - Core', () => {
                 name: 'test',
                 attributes: {
                     if: "false"
-                }
+                },
+                chunked: true,
+                clientAsync: false,
+                source: undefined
             }],
             page: 'page'
         } as IPageLibConfiguration;
