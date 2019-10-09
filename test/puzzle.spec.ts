@@ -33,7 +33,7 @@ describe('PuzzleJs', () => {
 
         PuzzleJs.inject({module: Module});
 
-        expect((<any>PuzzleJs)['module'].m).to.eq(Module.m);
+        expect((PuzzleJs as any)['module'].m).to.eq(Module.m);
     });
 
     it('should register listeners', function () {
