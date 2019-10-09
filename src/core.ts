@@ -46,7 +46,7 @@ export class Core extends Module {
 
   @on(EVENT.ON_FRAGMENT_RENDERED)
   static loadAssetsOnFragment(fragmentName: string) {
-    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragmentName && !asset.disabled && asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER && !asset.preLoaded);
+    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragmentName && asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER && !asset.preLoaded);
 
     const scripts = Core.createLoadQueue(onFragmentRenderAssets);
 
