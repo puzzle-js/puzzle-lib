@@ -18,6 +18,7 @@ export interface IPageLibAsset {
   link: string;
   preLoaded: boolean;
   defer?: boolean;
+  if?: boolean;
 }
 
 export interface ICustomPageAsset {

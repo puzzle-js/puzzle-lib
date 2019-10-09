@@ -46,7 +46,7 @@ export class Core extends Module {
 
   @on(EVENT.ON_FRAGMENT_RENDERED)
   static loadAssetsOnFragment(fragmentName: string) {
-    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragmentName && asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER && !asset.preLoaded);
+    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragmentName && !asset.disabled && asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER && !asset.preLoaded);
 
     const scripts = Core.createLoadQueue(onFragmentRenderAssets);
 
@@ -55,7 +55,13 @@ export class Core extends Module {
 
   @on(EVENT.ON_PAGE_LOAD)
   static pageLoaded() {
-    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded);
+    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => {
+      const fragment = Core.__pageConfiguration.fragments.find(fragment => fragment.name === asset.fragment);
+      if(fragment){
+        return asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && fragment.attributes.if !== "true" && !asset.preLoaded;
+      }
+      return asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded;
+    });
 
     const scripts = Core.createLoadQueue(onFragmentRenderAssets);
 
