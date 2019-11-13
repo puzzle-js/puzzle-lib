@@ -109,10 +109,35 @@ export class Core extends Module {
       .get(key, (gunResponse: any) => {
         if (gunResponse.err || !gunResponse.put) {
           this.fetchGatewayFragment(fragment)
-            .then(gatewayResponse => Core.gun.get(key).put(gatewayResponse));
+            .then(gatewayResponse => Core.gun.get(key).put({
+              ...gatewayResponse,
+              ...gatewayResponse.$headers ? {
+                $headers: JSON.stringify(gatewayResponse.$headers)
+              } : {},
+              ...gatewayResponse.$model ? {
+                $model: JSON.stringify(gatewayResponse.$model)
+              } : {},
+            }));
         }
       })
-      .on((gunResponse: any) => this.asyncRenderResponse(fragment, gunResponse));
+      .on((gunResponse: any) => {
+        try {
+          gunResponse.$model = JSON.parse(gunResponse.$model);
+          gunResponse.$headers = JSON.parse(gunResponse.$headers);
+          this.asyncRenderResponse(fragment, gunResponse);
+        } catch (e) {
+          this.fetchGatewayFragment(fragment)
+            .then(gatewayResponse => Core.gun.get(key).put({
+              ...gatewayResponse,
+              ...gatewayResponse.$headers ? {
+                $headers: JSON.stringify(gatewayResponse.$headers)
+              } : {},
+              ...gatewayResponse.$model ? {
+                $model: JSON.stringify(gatewayResponse.$model)
+              } : {},
+            }));
+        }
+      });
   }
 
   private static fetchGatewayFragment(fragment: IPageFragmentConfig) {
