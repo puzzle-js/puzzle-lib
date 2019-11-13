@@ -2,10 +2,11 @@ import {Module} from "./module";
 import {EVENT, RESOURCE_LOADING_TYPE} from "./enums";
 import {IPageFragmentConfig, IPageLibAsset, IPageLibConfiguration} from "./types";
 import {on} from "./decorators";
-import { AssetHelper } from "./assetHelper";
+import {AssetHelper} from "./assetHelper";
 
 export class Core extends Module {
   private static observer: IntersectionObserver | undefined;
+  private static gun: any | undefined;
 
   static get _pageConfiguration() {
     return this.__pageConfiguration;
@@ -21,6 +22,15 @@ export class Core extends Module {
   @on(EVENT.ON_CONFIG)
   static config(pageConfiguration: string) {
     Core.__pageConfiguration = JSON.parse(pageConfiguration) as IPageLibConfiguration;
+
+    const decentralizedFragmentsExists = Core.__pageConfiguration.fragments.some(fragment => fragment.asyncDecentralized);
+
+    if (decentralizedFragmentsExists) {
+      Core.gun = (window as any).Gun({
+        peers: Core.__pageConfiguration.peers,
+        localStorage: false
+      });
+    }
 
     if (this.isIntersectionObserverSupported()) {
       const asyncFragments = Core.__pageConfiguration.fragments.some(i => i.clientAsync);
@@ -56,7 +66,7 @@ export class Core extends Module {
   @on(EVENT.ON_PAGE_LOAD)
   static pageLoaded() {
     const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => {
-      if(asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded) {
+      if (asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded) {
         const fragment = Core.__pageConfiguration.fragments.find(fragment => fragment.name === asset.fragment);
         return fragment && fragment.attributes.if !== "false";
       }
@@ -87,31 +97,54 @@ export class Core extends Module {
 
   private static asyncLoadFragment(fragment: IPageFragmentConfig) {
     const queryString = this.prepareQueryString(fragment.attributes);
-    fetch(`${fragment.source}${location.pathname}${queryString}`, {
+    const key = `${fragment.source}${location.pathname}${queryString}`;
+
+    if (!fragment.asyncDecentralized) {
+      return this.fetchGatewayFragment(fragment)
+        .then(res => this.asyncRenderResponse(fragment, res));
+    }
+
+
+    Core.gun
+      .get(key, (gunResponse: any) => {
+        if (gunResponse.err || !gunResponse.put) {
+          this.fetchGatewayFragment(fragment)
+            .then(gatewayResponse => Core.gun.get(key).put(gatewayResponse));
+        }
+      })
+      .on((gunResponse: any) => this.asyncRenderResponse(fragment, gunResponse));
+  }
+
+  private static fetchGatewayFragment(fragment: IPageFragmentConfig) {
+    const queryString = this.prepareQueryString(fragment.attributes);
+    const fragmentRequestUrl = `${fragment.source}${location.pathname}${queryString}`;
+    return fetch(fragmentRequestUrl, {
       credentials: 'include'
-    }).then(res => {
-      return res.json();
     })
       .then(res => {
-        if (res['$model']) {
-          Object.keys(res['$model']).forEach(key => {
-            (window as any)[key] = res['$model'][key];
-          });
-        }
-
-        Object.keys(res).forEach(key => {
-          if (!key.startsWith('$')) {
-            const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
-            if (container) {
-              this.setEvalInnerHtml(container, res[key]);
-            }
-          }
-        });
-
-        const fragmentAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragment.name);
-        const scripts = Core.createLoadQueue(fragmentAssets, true);
-        AssetHelper.loadJsSeries(scripts);
+        return res.json();
       });
+  }
+
+  private static asyncRenderResponse(fragment: IPageFragmentConfig, res: any) {
+    if (res['$model']) {
+      Object.keys(res['$model']).forEach(key => {
+        (window as any)[key] = res['$model'][key];
+      });
+    }
+
+    Object.keys(res).forEach(key => {
+      if (!key.startsWith('$')) {
+        const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
+        if (container) {
+          this.setEvalInnerHtml(container, res[key]);
+        }
+      }
+    });
+
+    const fragmentAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragment.name);
+    const scripts = Core.createLoadQueue(fragmentAssets, true);
+    AssetHelper.loadJsSeries(scripts);
   }
 
   private static getFragmentContainerSelector(fragment: IPageFragmentConfig, partial: string) {

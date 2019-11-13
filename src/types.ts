@@ -31,6 +31,7 @@ export interface IPageFragmentConfig {
   name: string;
   chunked: boolean;
   clientAsync: boolean;
+  asyncDecentralized: boolean;
   attributes: { [name: string]: string };
   source: string | undefined;
 }
@@ -47,6 +48,7 @@ export interface IPageLibConfiguration {
   fragments: IPageFragmentConfig[];
   assets: IPageLibAsset[];
   dependencies: IPageLibDependency[];
+  peers: string[];
 }
 
 export interface IEventListener {

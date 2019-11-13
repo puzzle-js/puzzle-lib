@@ -133,82 +133,84 @@ describe('Module - Core', () => {
       ]);
   });
 
-    it('should create true load queue for js assets excluding async', function () {
-        const assets = [
-            {
-                name: 'bundle1',
-                dependent: ['vendor1'],
-                preLoaded: false,
-                link: 'bundle1.js',
-                fragment: 'test',
-                loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
-                type: RESOURCE_TYPE.JS
-            }
-        ] as IPageLibAsset[];
-        const dependencies = [
-            {
-                name: 'vendor1',
-                link: 'vendor1.js',
-                preLoaded: false
-            }
-        ] as IPageLibDependency[];
-        const config = {
-            dependencies,
-            assets,
-            fragments: [{
-                name: 'test',
-                clientAsync: true
-            }],
-            page: 'page'
-        } as IPageLibConfiguration;
+  it('should create true load queue for js assets excluding async', function () {
+    const assets = [
+      {
+        name: 'bundle1',
+        dependent: ['vendor1'],
+        preLoaded: false,
+        link: 'bundle1.js',
+        fragment: 'test',
+        loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
+        type: RESOURCE_TYPE.JS
+      }
+    ] as IPageLibAsset[];
+    const dependencies = [
+      {
+        name: 'vendor1',
+        link: 'vendor1.js',
+        preLoaded: false
+      }
+    ] as IPageLibDependency[];
+    const config = {
+      dependencies,
+      assets,
+      fragments: [{
+        name: 'test',
+        clientAsync: true
+      }],
+      page: 'page'
+    } as IPageLibConfiguration;
 
-        Core.config(JSON.stringify(config));
+    Core.config(JSON.stringify(config));
 
-        const queue = Core.createLoadQueue(assets);
+    const queue = Core.createLoadQueue(assets);
 
-        expect(queue).to.deep.eq(
-          []);
-    });
+    expect(queue).to.deep.eq(
+      []);
+  });
 
-    it('should create true load queue for js assets excluding conditional fragments', function () {
-        const assets = [
-            {
-                name: 'bundle1',
-                dependent: ['vendor1'],
-                preLoaded: false,
-                link: 'bundle1.js',
-                fragment: 'test',
-                loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
-                type: RESOURCE_TYPE.JS
-            }
-        ] as IPageLibAsset[];
-        const dependencies = [
-            {
-                name: 'vendor1',
-                link: 'vendor1.js',
-                preLoaded: false
-            }
-        ] as IPageLibDependency[];
-        const config = {
-            dependencies,
-            assets,
-            fragments: [{
-                name: 'test',
-                attributes: {
-                    if: "false"
-                },
-                chunked: true,
-                clientAsync: false,
-                source: undefined
-            }],
-            page: 'page'
-        } as IPageLibConfiguration;
+  it('should create true load queue for js assets excluding conditional fragments', function () {
+    const assets = [
+      {
+        name: 'bundle1',
+        dependent: ['vendor1'],
+        preLoaded: false,
+        link: 'bundle1.js',
+        fragment: 'test',
+        loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
+        type: RESOURCE_TYPE.JS
+      }
+    ] as IPageLibAsset[];
+    const dependencies = [
+      {
+        name: 'vendor1',
+        link: 'vendor1.js',
+        preLoaded: false
+      }
+    ] as IPageLibDependency[];
+    const config = {
+      dependencies,
+      assets,
+      fragments: [{
+        name: 'test',
+        attributes: {
+          if: "false"
+        },
+        chunked: true,
+        clientAsync: false,
+        source: undefined,
+        asyncDecentralized: false
+      }],
+      page: 'page',
+      peers: []
+    } as IPageLibConfiguration;
 
-        const mockLoadJsSeries = sandbox.mock(AssetHelper);
+    const mockLoadJsSeries = sandbox.mock(AssetHelper);
 
-        Core.config(JSON.stringify(config));
-        Core.pageLoaded();
+    Core.config(JSON.stringify(config));
+    Core.pageLoaded();
 
-        mockLoadJsSeries.expects("loadJsSeries").calledWith([]);
-    });
+    mockLoadJsSeries.expects("loadJsSeries").calledWith([]);
+  });
 });
