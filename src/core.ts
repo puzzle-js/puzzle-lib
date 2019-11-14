@@ -27,8 +27,7 @@ export class Core extends Module {
 
     if (decentralizedFragmentsExists) {
       Core.gun = (window as any).Gun({
-        peers: Core.__pageConfiguration.peers,
-        localStorage: false
+        peers: Core.__pageConfiguration.peers
       });
     }
 
@@ -118,6 +117,7 @@ export class Core extends Module {
                 $model: JSON.stringify(gatewayResponse.$model)
               } : {},
             }));
+            // https://jsbin.com/veyololoqa/1/edit?html,js,console
         }
       })
       .on((gunResponse: any) => {
