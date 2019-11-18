@@ -157,6 +157,10 @@ export class Core extends Module {
       });
     }
 
+    if (res['$headers'] && res['$headers'].location) {
+      return location.href = res['$headers'].location;
+    }
+
     Object.keys(res).forEach(key => {
       if (!key.startsWith('$')) {
         const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
