@@ -95,14 +95,15 @@ export class Core extends Module {
   }
 
   private static asyncLoadFragment(fragment: IPageFragmentConfig) {
+    if (fragment.asyncLoaded) return;
+    fragment.asyncLoaded = true;
     const queryString = this.prepareQueryString(fragment.attributes);
-    const key = `${fragment.source}${location.pathname}${queryString}`;
+    const key = `${fragment.source}${window.location.pathname}${queryString}`;
 
     if (!fragment.asyncDecentralized) {
       return this.fetchGatewayFragment(fragment)
         .then(res => this.asyncRenderResponse(fragment, res));
     }
-
 
     Core.gun
       .get(key, (gunResponse: any) => {
@@ -141,7 +142,7 @@ export class Core extends Module {
 
   private static fetchGatewayFragment(fragment: IPageFragmentConfig) {
     const queryString = this.prepareQueryString(fragment.attributes);
-    const fragmentRequestUrl = `${fragment.source}${location.pathname}${queryString}`;
+    const fragmentRequestUrl = `${fragment.source}${window.location.pathname}${queryString}`;
     return fetch(fragmentRequestUrl, {
       credentials: 'include'
     })
@@ -183,7 +184,7 @@ export class Core extends Module {
   }
 
   private static prepareQueryString(fragmentAttributes: Record<string, string>) {
-    const attributes = Object.assign(location.search.slice(1).split('&').reduce((dict: { [name: string]: string }, i) => {
+    const attributes = Object.assign(window.location.search.slice(1).split('&').reduce((dict: { [name: string]: string }, i) => {
       const [key, value] = i.split('=');
       if (typeof value !== "undefined") {
         dict[key] = value;
@@ -267,6 +268,18 @@ export class Core extends Module {
         }
       }
     });
+  }
+
+  static renderAsyncFragment(fragmentName: string) {
+    const fragment = this.__pageConfiguration.fragments.find(item => item.name === fragmentName);
+    if (fragment) {
+      const selector = this.getFragmentContainerSelector(fragment, "main");
+      const fragmentContainer = window.document.querySelector(selector);
+      if (fragmentContainer ) {
+        if (this.observer) this.observer.unobserve(fragmentContainer);
+        return this.asyncLoadFragment(fragment);
+      }
+    }
   }
 
   private static isIntersectionObserverSupported() {

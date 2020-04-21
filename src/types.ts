@@ -34,6 +34,7 @@ export interface IPageFragmentConfig {
   asyncDecentralized: boolean;
   attributes: { [name: string]: string };
   source: string | undefined;
+  asyncLoaded?: boolean;
 }
 
 export interface IPageLibDependency {
