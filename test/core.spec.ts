@@ -29,12 +29,12 @@ declare var global: Global;
 describe('Module - Core', () => {
   beforeEach(() => {
     global.window = (new JSDOM(``, {runScripts: "outside-only"})).window;
-    sandbox.verifyAndRestore();
   });
 
   afterEach(() => {
     delete global.window;
     PuzzleJs.clearListeners();
+    sandbox.verifyAndRestore();
     (Core as any)._pageConfiguration = undefined;
   });
 
@@ -170,7 +170,7 @@ describe('Module - Core', () => {
       []);
   });
 
-  it('should create true load queue for js assets excluding conditional fragments', function () {
+  it('should render async fragment', async () => {
     const assets = [
       {
         name: 'bundle1',
@@ -198,7 +198,7 @@ describe('Module - Core', () => {
           if: "false"
         },
         chunked: true,
-        clientAsync: false,
+        clientAsync: true,
         source: undefined,
         asyncDecentralized: false
       }],
@@ -206,11 +206,18 @@ describe('Module - Core', () => {
       peers: []
     } as IPageLibConfiguration;
 
-    const mockLoadJsSeries = sandbox.mock(AssetHelper);
+    const fragmentContainer = global.window.document.createElement('div');
+    fragmentContainer.setAttribute('puzzle-fragment', 'test');
+    global.window.document.body.appendChild(fragmentContainer);
+
+    const stubFetchGatewayFragment = sandbox.stub(Core as any, "fetchGatewayFragment").resolves();
+    const stubAsyncRenderResponse = sandbox.stub(Core as any, "asyncRenderResponse").resolves();
 
     Core.config(JSON.stringify(config));
-    Core.pageLoaded();
+    await Core.renderAsyncFragment('test');
+    await Core.renderAsyncFragment('test');
 
-    mockLoadJsSeries.expects("loadJsSeries").calledWith([]);
+    expect(stubFetchGatewayFragment.calledOnce).to.eq(true);
+    expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
   });
 });
