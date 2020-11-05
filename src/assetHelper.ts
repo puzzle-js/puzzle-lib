@@ -6,7 +6,7 @@ export class AssetHelper {
     const scriptTag: any = window.document.createElement('script');
     if (!window.document.querySelector(`[puzzle-asset="${asset.name}"]`)) {
       scriptTag.type = 'text/javascript';
-      scriptTag.attributes['puzzle-asset'] = asset.name;
+      scriptTag.setAttribute('puzzle-asset', asset.name);
       scriptTag.src = asset.link;
       scriptTag.defer = asset.defer || false;
       scriptTag.crossOrigin = "anonymous";
