@@ -169,7 +169,7 @@ export class Core extends Module {
       if (!key.startsWith('$')) {
         const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
         if (container) {
-          this.setEvalInnerHtml(container, res[key]);
+          this.setEvalInnerHtml(container, res[key],container.tagName === "meta");
         }
       }
     });
@@ -195,7 +195,12 @@ export class Core extends Module {
     return Object.keys(attributes).reduce((query: string, key: string) => `${query}&${key}=${attributes[key]}`, '?__renderMode=stream');
   }
 
-  private static setEvalInnerHtml(elm: any, html: any) {
+  private static setEvalInnerHtml(elm: any, html: any, meta?: boolean) {
+    if(meta){
+      elm.outerHTML = html;
+      return;
+    }
+    
     elm.innerHTML = html;
     Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
       const newScript = document.createElement("script");
