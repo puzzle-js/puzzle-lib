@@ -180,7 +180,7 @@ export class Core extends Module {
   }
 
   private static getFragmentContainerSelector(fragment: IPageFragmentConfig, partial: string) {
-    return partial === "main" ? `[puzzle-fragment="${fragment.name}"]` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${partial}"]`;
+    return partial === "main" ? `[puzzle-fragment="${fragment.name}"]:not([fragment-partial])` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${partial}"]`;
   }
 
   private static prepareQueryString(fragmentAttributes: Record<string, string>) {
