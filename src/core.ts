@@ -225,10 +225,19 @@ export class Core extends Module {
             asset.dependent.forEach((dependencyName) => {
               const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
               const dependencyContent = dependency[0];
-              if (dependencyContent && !dependencyContent.preLoaded) {
-                if (loadList.indexOf(dependencyContent) === -1) {
-                  loadList.push(dependencyContent);
-                  dependencyContent.preLoaded = true;
+              if (fragment && fragment.clientAsync) {
+                if (dependencyContent) {
+                  if (loadList.indexOf(dependencyContent) === -1) {
+                    loadList.push(dependencyContent);
+                    dependencyContent.preLoaded = true;
+                  }
+                }
+              } else {
+                if (dependencyContent && !dependencyContent.preLoaded) {
+                  if (loadList.indexOf(dependencyContent) === -1) {
+                    loadList.push(dependencyContent);
+                    dependencyContent.preLoaded = true;
+                  }
                 }
               }
             });
@@ -275,7 +284,7 @@ export class Core extends Module {
     if (fragment) {
       const selector = this.getFragmentContainerSelector(fragment, "main");
       const fragmentContainer = window.document.querySelector(selector);
-      if (fragmentContainer ) {
+      if (fragmentContainer) {
         if (this.observer) this.observer.unobserve(fragmentContainer);
         return this.asyncLoadFragment(fragment);
       }
