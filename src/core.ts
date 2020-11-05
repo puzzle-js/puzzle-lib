@@ -169,7 +169,7 @@ export class Core extends Module {
       if (!key.startsWith('$')) {
         const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
         if (container) {
-          this.setEvalInnerHtml(container, res[key],container.tagName === "meta");
+          this.setEvalInnerHtml(container, res[key],container.tagName === "META");
         }
       }
     });
