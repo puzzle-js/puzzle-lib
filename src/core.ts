@@ -161,7 +161,7 @@ export class Core extends Module {
     if (res['$headers']) {
       const locationRedirect = res['$headers'].location || res['$headers'].Location;
       if (locationRedirect) {
-        return location.href = res['$headers'].location;
+        return location.replace(res['$headers'].location);
       }
     }
 
@@ -186,7 +186,7 @@ export class Core extends Module {
   private static prepareQueryString(fragmentAttributes: Record<string, string>) {
     const attributes = Object.assign(window.location.search.slice(1).split('&').reduce((dict: { [name: string]: string }, i) => {
       const [key, value] = i.split('=');
-      if (typeof value !== "undefined") {
+      if (typeof value !== "undefined" && key !== "source") {
         dict[key] = value;
       }
       return dict;
@@ -200,7 +200,7 @@ export class Core extends Module {
       elm.outerHTML = html;
       return;
     }
-    
+
     elm.innerHTML = html;
     Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
       const newScript = document.createElement("script");
