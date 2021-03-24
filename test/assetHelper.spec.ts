@@ -48,7 +48,6 @@ describe('Module - Asset Helper', () => {
         const result = AssetHelper.loadJs(asset);
 
         // assert
-        expect(result).to.eq(null);
         expect(global.window.document.body.children.length).to.eq(1);
     });
 
