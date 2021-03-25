@@ -186,12 +186,12 @@ export class Core extends Module {
   private static prepareQueryString(fragmentAttributes: Record<string, string>) {
     const attributes = Object.assign(window.location.search.slice(1).split('&').reduce((dict: { [name: string]: string }, i) => {
       const [key, value] = i.split('=');
-      if (typeof value !== "undefined" && key !== "source") {
+      if (typeof value !== "undefined") {
         dict[key] = value;
       }
       return dict;
     }, {}), fragmentAttributes);
-
+    delete attributes.source;
     return Object.keys(attributes).reduce((query: string, key: string) => `${query}&${key}=${attributes[key]}`, '?__renderMode=stream');
   }
 
