@@ -161,7 +161,7 @@ export class Core extends Module {
     if (res['$headers']) {
       const locationRedirect = res['$headers'].location || res['$headers'].Location;
       if (locationRedirect) {
-        return location.replace(res['$headers'].location);
+        return location.replace(locationRedirect);
       }
     }
 
