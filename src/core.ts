@@ -144,6 +144,9 @@ export class Core extends Module {
     const queryString = this.prepareQueryString(fragment.attributes);
     const fragmentRequestUrl = `${fragment.source}${window.location.pathname}${queryString}`;
     return fetch(fragmentRequestUrl, {
+      headers: {
+        originalurl: window.location.pathname
+      },
       credentials: 'include'
     })
       .then(res => {

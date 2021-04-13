@@ -3,7 +3,7 @@ import {JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
 import {Core} from "../src/core";
 import {createPageLibConfiguration} from "./mock";
-import sinon from "sinon";
+import sinon, { SinonStub } from "sinon";
 import {AssetHelper} from "../src/assetHelper";
 import * as faker from "faker";
 import {IPageLibAsset, IPageLibConfiguration, IPageLibDependency} from "../src/types";
@@ -22,17 +22,20 @@ declare global {
 export interface Global {
   document: Document;
   window: Window;
+  fetch: any;
 }
 
 declare var global: Global;
 
 describe('Module - Core', () => {
   beforeEach(() => {
-    global.window = (new JSDOM(``, {runScripts: "outside-only"})).window;
+    global.window = (new JSDOM(``, { runScripts: "outside-only" })).window;
+    global.fetch = sandbox.stub().resolves({json: () => {}});
   });
 
   afterEach(() => {
     delete global.window;
+    delete global.fetch;
     PuzzleJs.clearListeners();
     sandbox.verifyAndRestore();
     (Core as any)._pageConfiguration = undefined;
@@ -210,14 +213,15 @@ describe('Module - Core', () => {
     fragmentContainer.setAttribute('puzzle-fragment', 'test');
     global.window.document.body.appendChild(fragmentContainer);
 
-    const stubFetchGatewayFragment = sandbox.stub(Core as any, "fetchGatewayFragment").resolves();
+    const fetchStub = global.fetch as SinonStub;
     const stubAsyncRenderResponse = sandbox.stub(Core as any, "asyncRenderResponse").resolves();
 
     Core.config(JSON.stringify(config));
     await Core.renderAsyncFragment('test');
     await Core.renderAsyncFragment('test');
-
-    expect(stubFetchGatewayFragment.calledOnce).to.eq(true);
+    
+    expect(fetchStub.calledOnce).to.eq(true);
+    expect(fetchStub.getCall(0).lastArg.headers).to.haveOwnProperty("originalurl");
     expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
   });
 });
