@@ -31,6 +31,11 @@ export class Core extends Module {
       });
     }
 
+    const forcedFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync && i.clientAsyncForce);
+    if (forcedFragments.length) {
+      forcedFragments.forEach(fragment => Core.renderAsyncFragment(fragment.name));
+    }
+
     if (this.isIntersectionObserverSupported()) {
       const asyncFragments = Core.__pageConfiguration.fragments.some(i => i.clientAsync);
 
