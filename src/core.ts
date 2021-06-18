@@ -33,7 +33,7 @@ export class Core extends Module {
 
     const forcedFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync && i.clientAsyncForce);
     if (forcedFragments.length) {
-      forcedFragments.forEach(fragment => Core.renderAsyncFragment(fragment.name));
+      forcedFragments.forEach(fragment => Core.asyncLoadFragment(fragment));
     }
 
     if (this.isIntersectionObserverSupported()) {
