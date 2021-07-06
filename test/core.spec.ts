@@ -4,7 +4,6 @@ import {PuzzleJs} from "../src/puzzle";
 import {Core} from "../src/core";
 import {createPageLibConfiguration} from "./mock";
 import sinon, { SinonStub } from "sinon";
-import {AssetHelper} from "../src/assetHelper";
 import * as faker from "faker";
 import {IPageLibAsset, IPageLibConfiguration, IPageLibDependency} from "../src/types";
 import {RESOURCE_LOADING_TYPE, RESOURCE_TYPE} from "../src/enums";
@@ -203,6 +202,7 @@ describe('Module - Core', () => {
         chunked: true,
         clientAsync: true,
         clientAsyncForce: undefined,
+        onDemand: undefined,
         source: undefined,
         asyncDecentralized: false
       }],
@@ -256,6 +256,7 @@ describe('Module - Core', () => {
         chunked: true,
         clientAsync: true,
         clientAsyncForce: true,
+        onDemand: undefined,
         source: undefined,
         asyncDecentralized: false
       }],
@@ -277,5 +278,67 @@ describe('Module - Core', () => {
     expect(fetchStub.calledOnce).to.eq(true);
     expect(fetchStub.getCall(0).lastArg.headers).to.haveOwnProperty("originalurl");
     expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
+  });
+
+  it('should return a promise object that is resolved if fragment does not exist', () => {
+    const assets = [] as IPageLibAsset[];
+    const dependencies = [] as IPageLibDependency[];
+    const config = {
+      dependencies,
+      assets,
+      fragments: [],
+      page: 'page',
+      peers: []
+    } as IPageLibConfiguration;
+
+    Core.config(JSON.stringify(config));
+    const result = Core.renderAsyncFragment('test');
+    
+    expect(result).to.be.a('promise');
+  });
+
+  it('should return a promise object that is resolved if fragment is asyncLoaded', () => {
+    const assets = [
+      {
+        name: 'bundle1',
+        dependent: ['vendor1'],
+        preLoaded: false,
+        link: 'bundle1.js',
+        fragment: 'test',
+        loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
+        type: RESOURCE_TYPE.JS
+      }
+    ] as IPageLibAsset[];
+    const dependencies = [
+      {
+        name: 'vendor1',
+        link: 'vendor1.js',
+        preLoaded: false
+      }
+    ] as IPageLibDependency[];
+    const config = {
+      dependencies,
+      assets,
+      fragments: [{
+        name: 'test',
+        attributes: {
+          if: "false"
+        },
+        chunked: true,
+        clientAsync: true,
+        clientAsyncForce: undefined,
+        onDemand: undefined,
+        source: undefined,
+        asyncDecentralized: false,
+        asyncLoaded: true
+      }],
+      page: 'page',
+      peers: []
+    } as IPageLibConfiguration;
+
+    Core.config(JSON.stringify(config));
+    const result = Core.renderAsyncFragment('test');
+    
+    expect(result).to.be.a('promise');
   });
 });

@@ -31,13 +31,14 @@ export class Core extends Module {
       });
     }
 
-    const forcedFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync && i.clientAsyncForce);
+    const fragments = Core.__pageConfiguration.fragments.filter(i => !i.onDemand);
+    const forcedFragments = fragments.filter(i => i.clientAsync && i.clientAsyncForce);
     if (forcedFragments.length) {
       forcedFragments.forEach(fragment => Core.asyncLoadFragment(fragment));
     }
 
     if (this.isIntersectionObserverSupported()) {
-      const asyncFragments = Core.__pageConfiguration.fragments.some(i => i.clientAsync);
+      const asyncFragments = fragments.some(i => i.clientAsync);
 
       if (asyncFragments) {
         this.observer = new IntersectionObserver(this.onIntersection.bind(this));
@@ -84,7 +85,7 @@ export class Core extends Module {
 
   @on(EVENT.ON_PAGE_LOAD)
   static asyncComponentRender() {
-    const asyncFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync);
+    const asyncFragments = Core.__pageConfiguration.fragments.filter(i => i.clientAsync && !i.onDemand);
 
     asyncFragments.forEach(fragment => {
       if (this.observer) {
@@ -100,7 +101,7 @@ export class Core extends Module {
   }
 
   private static asyncLoadFragment(fragment: IPageFragmentConfig) {
-    if (fragment.asyncLoaded) return;
+    if (fragment.asyncLoaded) return Promise.resolve();
     fragment.asyncLoaded = true;
     const queryString = this.prepareQueryString(fragment.attributes);
     const key = `${fragment.source}${window.location.pathname}${queryString}`;
@@ -302,6 +303,8 @@ export class Core extends Module {
         return this.asyncLoadFragment(fragment);
       }
     }
+
+    return Promise.resolve();
   }
 
   private static isIntersectionObserverSupported() {

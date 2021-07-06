@@ -32,6 +32,7 @@ export interface IPageFragmentConfig {
   chunked: boolean;
   clientAsync: boolean;
   clientAsyncForce: boolean | undefined;
+  onDemand: boolean | undefined;
   asyncDecentralized: boolean;
   attributes: { [name: string]: string };
   source: string | undefined;
