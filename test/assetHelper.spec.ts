@@ -51,4 +51,23 @@ describe('Module - Asset Helper', () => {
         expect(global.window.document.body.children.length).to.eq(1);
     });
 
+    it('should append link tag without promise', () => {
+        // arrange
+        const asset: IPageLibAsset = {
+            name: faker.lorem.word(),
+            loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
+            fragment: faker.lorem.word(),
+            dependent: [],
+            type: RESOURCE_TYPE.CSS,
+            link: faker.lorem.word(),
+            preLoaded: false
+        };
+
+        // act
+        const result = AssetHelper.loadCSS(asset);
+
+        // assert
+        expect(global.window.document.head.children.length).to.eq(1);
+    });
+
 });

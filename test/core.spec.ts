@@ -64,8 +64,6 @@ describe('Module - Core', () => {
 
     Core.onVariables(fragmentName, variableName, windowModel);
 
-    console.log(window[variableName]);
-
     expect(window[variableName]).to.deep.eq(windowModel);
   });
 
@@ -87,7 +85,7 @@ describe('Module - Core', () => {
     expect(global.window.document.body.innerHTML).to.eq(`<div id="${fragmentContainerId}">${fragmentContent}</div>`);
   });
 
-  it('should create true load queue for js assets', function () {
+  it('should create true load queue for js and css assets', function () {
     const assets = [
       {
         name: 'bundle1',
@@ -97,6 +95,13 @@ describe('Module - Core', () => {
         fragment: 'test',
         loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
         type: RESOURCE_TYPE.JS
+      },
+      {
+        name: 'css1',
+        link: 'css1.js',
+        fragment: 'test',
+        loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
+        type: RESOURCE_TYPE.CSS
       }
     ] as IPageLibAsset[];
     const dependencies = [
@@ -131,6 +136,13 @@ describe('Module - Core', () => {
           loadMethod: 2,
           type: 1,
           defer: true
+        },
+        {
+          name: 'css1',
+          link: 'css1.js',
+          fragment: 'test',
+          loadMethod: 2,
+          type: 0
         }
       ]);
   });
@@ -203,6 +215,7 @@ describe('Module - Core', () => {
         clientAsync: true,
         clientAsyncForce: undefined,
         onDemand: undefined,
+        criticalCss: undefined,
         source: undefined,
         asyncDecentralized: false
       }],
@@ -257,6 +270,7 @@ describe('Module - Core', () => {
         clientAsync: true,
         clientAsyncForce: true,
         onDemand: undefined,
+        criticalCss: undefined,
         source: undefined,
         asyncDecentralized: false
       }],
@@ -328,6 +342,7 @@ describe('Module - Core', () => {
         clientAsync: true,
         clientAsyncForce: undefined,
         onDemand: undefined,
+        criticalCss: undefined,
         source: undefined,
         asyncDecentralized: false,
         asyncLoaded: true
