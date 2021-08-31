@@ -1,3 +1,4 @@
+import { RESOURCE_TYPE } from "./enums";
 import {IPageLibAsset} from "./types";
 
 export class AssetHelper {
@@ -46,15 +47,45 @@ export class AssetHelper {
         return this.promises[asset.name].promise;
     }
 
-    static loadJsSeries(scripts: IPageLibAsset[]) {
-        for (let i = 0, p: any = Promise.resolve(); i < scripts.length; i++) {
+    static loadCSS(asset: IPageLibAsset): Promise<any> {
+        const linkTag: any = window.document.createElement('link');
+
+        if (!this.promises[asset.name]) {
+            this.promises[asset.name] = this.createDeferred();
+            linkTag.rel = 'stylesheet';
+            linkTag.setAttribute('puzzle-asset', asset.name);
+            linkTag.href = asset.link;
+            linkTag.onload = () => {
+                this.promises[asset.name].resolve();
+            };
+
+            window.document.head.appendChild(linkTag);
+        }
+
+        return this.promises[asset.name].promise;
+    }
+
+    static loadAssetSeries(assets: IPageLibAsset[], callback?: Function) {
+        for (let i = 0, p: any = Promise.resolve(); i < assets.length; i++) {
             p = p.then(() => new Promise(resolve => {
-                    const assetLoading = AssetHelper.loadJs(scripts[i]);
-                    assetLoading.then(() => {
-                        resolve();
-                    });
+                    const asset = assets[i];
+                    if (asset.type === RESOURCE_TYPE.JS) {
+                        const assetLoading = AssetHelper.loadJs(asset);
+                        assetLoading.then(() => {
+                            resolve(null);
+                        });
+                    } else if (asset.type === RESOURCE_TYPE.CSS) {
+                        const assetLoading = AssetHelper.loadCSS(asset);
+                        assetLoading.then(() => {
+                            resolve(null);
+                        });
+                    }
                 }
-            ));
+            )).then(() => {
+                if (callback && assets.length - 1 === i) {
+                    callback();
+                }
+            });
         }
     }
 }

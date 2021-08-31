@@ -1,5 +1,5 @@
 import {Module} from "./module";
-import {EVENT, RESOURCE_LOADING_TYPE} from "./enums";
+import {EVENT, RESOURCE_LOADING_TYPE, RESOURCE_TYPE} from "./enums";
 import {IPageFragmentConfig, IPageLibAsset, IPageLibConfiguration} from "./types";
 import {on} from "./decorators";
 import {AssetHelper} from "./assetHelper";
@@ -63,9 +63,9 @@ export class Core extends Module {
   static loadAssetsOnFragment(fragmentName: string) {
     const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragmentName && asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER && !asset.preLoaded);
 
-    const scripts = Core.createLoadQueue(onFragmentRenderAssets);
+    const assets = Core.createLoadQueue(onFragmentRenderAssets);
 
-    AssetHelper.loadJsSeries(scripts);
+    AssetHelper.loadAssetSeries(assets);
   }
 
   @on(EVENT.ON_PAGE_LOAD)
@@ -78,9 +78,9 @@ export class Core extends Module {
       return false;
     });
 
-    const scripts = Core.createLoadQueue(onFragmentRenderAssets);
+    const assets = Core.createLoadQueue(onFragmentRenderAssets);
 
-    AssetHelper.loadJsSeries(scripts);
+    AssetHelper.loadAssetSeries(assets);
   }
 
   @on(EVENT.ON_PAGE_LOAD)
@@ -174,18 +174,19 @@ export class Core extends Module {
       }
     }
 
-    Object.keys(res).forEach(key => {
-      if (!key.startsWith('$')) {
-        const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
-        if (container) {
-          this.setEvalInnerHtml(container, res[key],container.tagName === "META");
-        }
-      }
-    });
-
     const fragmentAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragment.name);
-    const scripts = Core.createLoadQueue(fragmentAssets, true);
-    AssetHelper.loadJsSeries(scripts);
+    const assets = Core.createLoadQueue(fragmentAssets, true);
+
+    AssetHelper.loadAssetSeries(assets, () => {
+      Object.keys(res).forEach(key => {
+        if (!key.startsWith('$')) {
+          const container = document.querySelector(this.getFragmentContainerSelector(fragment, key));
+          if (container) {
+            this.setEvalInnerHtml(container, res[key],container.tagName === "META");
+          }
+        }
+      });
+    });
   }
 
   private static getFragmentContainerSelector(fragment: IPageFragmentConfig, partial: string) {
@@ -231,32 +232,38 @@ export class Core extends Module {
     assets.forEach(asset => {
       const fragment = Core.__pageConfiguration.fragments.find(i => i.name === asset.fragment);
       if (asyncQueue || (fragment && !fragment.clientAsync)) {
-        if (!asset.preLoaded) {
-          asset.preLoaded = true;
-          asset.defer = true;
-
-          if (asset.dependent) {
-            asset.dependent.forEach((dependencyName) => {
-              const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
-              const dependencyContent = dependency[0];
-              if (fragment && fragment.clientAsync) {
-                if (dependencyContent) {
-                  if (loadList.indexOf(dependencyContent) === -1) {
-                    loadList.push(dependencyContent);
-                    dependencyContent.preLoaded = true;
+        if (asset.type === RESOURCE_TYPE.JS) {
+          if (!asset.preLoaded) {
+            asset.preLoaded = true;
+            asset.defer = true;
+  
+            if (asset.dependent) {
+              asset.dependent.forEach((dependencyName) => {
+                const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
+                const dependencyContent = dependency[0];
+                if (fragment && fragment.clientAsync) {
+                  if (dependencyContent) {
+                    if (loadList.indexOf(dependencyContent) === -1) {
+                      loadList.push(dependencyContent);
+                      dependencyContent.preLoaded = true;
+                    }
+                  }
+                } else {
+                  if (dependencyContent && !dependencyContent.preLoaded) {
+                    if (loadList.indexOf(dependencyContent) === -1) {
+                      loadList.push(dependencyContent);
+                      dependencyContent.preLoaded = true;
+                    }
                   }
                 }
-              } else {
-                if (dependencyContent && !dependencyContent.preLoaded) {
-                  if (loadList.indexOf(dependencyContent) === -1) {
-                    loadList.push(dependencyContent);
-                    dependencyContent.preLoaded = true;
-                  }
-                }
-              }
-            });
+              });
+            }
+  
+            if (loadList.indexOf(asset) === -1) {
+              loadList.push(asset);
+            }
           }
-
+        } else if (asset.type === RESOURCE_TYPE.CSS) {
           if (loadList.indexOf(asset) === -1) {
             loadList.push(asset);
           }
