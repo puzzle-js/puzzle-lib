@@ -66,6 +66,10 @@ export class AssetHelper {
     }
 
     static loadAssetSeries(assets: IPageLibAsset[], callback?: Function) {
+        if (!assets.length && callback) {
+            callback();
+        }
+
         for (let i = 0, p: any = Promise.resolve(); i < assets.length; i++) {
             p = p.then(() => new Promise(resolve => {
                     const asset = assets[i];

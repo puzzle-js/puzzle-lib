@@ -130,4 +130,18 @@ describe('Module - Asset Helper', () => {
         });
     });
 
+    it('should call given callback if assets length is 0', async (done) => {
+        // arrange
+        const spy = sinon.spy();
+        const assets: IPageLibAsset[] = [];
+
+        // act
+        await AssetHelper.loadAssetSeries(assets, spy);
+
+        // assert
+        setTimeout(() => {
+            expect(spy.calledOnce).to.eq(true);
+            done();
+        });
+    });
 });
