@@ -130,6 +130,65 @@ describe('Module - Asset Helper', () => {
         });
     });
 
+    it('should call given callback when js asset has an error', async (done) => {
+        // arrange
+        const spy = sinon.spy();
+        const assets: IPageLibAsset[] = [
+            {
+                name: faker.lorem.word(),
+                loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
+                fragment: faker.lorem.word(),
+                dependent: [],
+                type: RESOURCE_TYPE.JS,
+                link: faker.lorem.word(),
+                preLoaded: false,
+                defer: true,
+            }
+        ];
+
+        // act
+        await AssetHelper.loadAssetSeries(assets, spy);
+
+        AssetHelper.promises[assets[0].name].reject();
+
+        // assert
+        expect(global.window.document.body.children.length).to.eq(1);
+
+        setTimeout(() => {
+            expect(spy.calledOnce).to.eq(true);
+            done();
+        });
+    });
+
+    it('should call given callback when css asset has an error', async (done) => {
+        // arrange
+        const spy = sinon.spy();
+        const assets: IPageLibAsset[] = [
+            {
+                name: faker.lorem.word(),
+                loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
+                fragment: faker.lorem.word(),
+                dependent: [],
+                type: RESOURCE_TYPE.CSS,
+                link: faker.lorem.word(),
+                preLoaded: false
+            }
+        ];
+
+        // act
+        await AssetHelper.loadAssetSeries(assets, spy);
+
+        AssetHelper.promises[assets[0].name].reject();
+
+        // assert
+        expect(global.window.document.head.children.length).to.eq(1);
+
+        setTimeout(() => {
+            expect(spy.calledOnce).to.eq(true);
+            done();
+        });
+    });
+
     it('should call given callback if assets length is 0', async (done) => {
         // arrange
         const spy = sinon.spy();
