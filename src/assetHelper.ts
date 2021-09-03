@@ -37,6 +37,10 @@ export class AssetHelper {
                 scriptTag.onload = () => {
                     this.promises[asset.name].resolve();
                 };
+
+                scriptTag.onerror = () => {
+                    this.promises[asset.name].reject();
+                };
             } else {
                 this.promises[asset.name].resolve();
             }
@@ -58,6 +62,9 @@ export class AssetHelper {
             linkTag.onload = () => {
                 this.promises[asset.name].resolve();
             };
+            linkTag.onerror = () => {
+                this.promises[asset.name].reject();
+            };
 
             window.document.head.appendChild(linkTag);
         }
@@ -71,21 +78,29 @@ export class AssetHelper {
         }
 
         for (let i = 0, p: any = Promise.resolve(); i < assets.length; i++) {
-            p = p.then(() => new Promise(resolve => {
+            p = p.then(() => new Promise((resolve, reject) => {
                     const asset = assets[i];
                     if (asset.type === RESOURCE_TYPE.JS) {
                         const assetLoading = AssetHelper.loadJs(asset);
                         assetLoading.then(() => {
                             resolve(null);
+                        }).catch(() => {
+                            reject(null);
                         });
                     } else if (asset.type === RESOURCE_TYPE.CSS) {
                         const assetLoading = AssetHelper.loadCSS(asset);
                         assetLoading.then(() => {
                             resolve(null);
+                        }).catch(() => {
+                            reject(null);
                         });
                     }
                 }
             )).then(() => {
+                if (callback && assets.length - 1 === i) {
+                    callback();
+                }
+            }).catch(() => {
                 if (callback && assets.length - 1 === i) {
                     callback();
                 }
