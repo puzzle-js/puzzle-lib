@@ -45,6 +45,7 @@ export interface IPageLibDependency {
   link: string;
   type: RESOURCE_TYPE;
   preLoaded: boolean;
+  loadMethod?: RESOURCE_LOADING_TYPE;
 }
 
 export interface IPageLibConfiguration {
