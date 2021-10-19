@@ -1,4 +1,4 @@
-import {RESOURCE_LOADING_TYPE, RESOURCE_TYPE} from "./enums";
+import {RESOURCE_LOADING_TYPE, RESOURCE_TYPE, RESOURCE_JS_EXECUTE_TYPE, RESOURCE_CSS_EXECUTE_TYPE} from "./enums";
 
 import {PuzzleJs} from "./puzzle";
 
@@ -46,6 +46,7 @@ export interface IPageLibDependency {
   type: RESOURCE_TYPE;
   preLoaded: boolean;
   loadMethod?: RESOURCE_LOADING_TYPE;
+  executeType?: RESOURCE_JS_EXECUTE_TYPE | RESOURCE_CSS_EXECUTE_TYPE;
 }
 
 export interface IPageLibConfiguration {
