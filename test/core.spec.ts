@@ -233,7 +233,7 @@ describe('Module - Core', () => {
     Core.config(JSON.stringify(config));
     await Core.renderAsyncFragment('test');
     await Core.renderAsyncFragment('test');
-    
+
     expect(fetchStub.calledOnce).to.eq(true);
     expect(fetchStub.getCall(0).lastArg.headers).to.haveOwnProperty("originalurl");
     expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
@@ -288,7 +288,71 @@ describe('Module - Core', () => {
     Core.config(JSON.stringify(config));
     await Core.renderAsyncFragment('test');
     await Core.renderAsyncFragment('test');
-    
+
+    expect(fetchStub.calledOnce).to.eq(true);
+    expect(fetchStub.getCall(0).lastArg.headers).to.haveOwnProperty("originalurl");
+    expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
+  });
+
+  it('should render async fragment withoutPathname', async () => {
+    const source = "source/";
+    const assets = [
+      {
+        name: 'bundle1',
+        dependent: ['vendor1'],
+        preLoaded: false,
+        link: 'bundle1.js',
+        fragment: 'test',
+        loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
+        type: RESOURCE_TYPE.JS
+      }
+    ] as IPageLibAsset[];
+    const dependencies = [
+      {
+        name: 'vendor1',
+        link: 'vendor1.js',
+        preLoaded: false
+      }
+    ] as IPageLibDependency[];
+    const config = {
+      dependencies,
+      assets,
+      fragments: [{
+        name: 'test',
+        attributes: {
+          if: "false",
+          withoutPathname: "true"
+        },
+        chunked: true,
+        clientAsync: true,
+        clientAsyncForce: undefined,
+        onDemand: undefined,
+        criticalCss: undefined,
+        source,
+        asyncDecentralized: false
+      }],
+      page: 'page',
+      peers: []
+    } as IPageLibConfiguration;
+
+    const fragmentContainer = global.window.document.createElement('div');
+    fragmentContainer.setAttribute('puzzle-fragment', 'test');
+    global.window.document.body.appendChild(fragmentContainer);
+
+    const fetchStub = global.fetch as SinonStub;
+    const stubAsyncRenderResponse = sandbox.stub(Core as any, "asyncRenderResponse").resolves();
+
+    Core.config(JSON.stringify(config));
+    await Core.renderAsyncFragment('test');
+    await Core.renderAsyncFragment('test');
+
+    const fragmentRequestUrl = `${source}?__renderMode=stream&if=false&withoutPathname=true`;
+    expect(fetchStub.calledWith(fragmentRequestUrl, {
+      headers: {
+        originalurl: window.location.pathname
+      },
+      credentials: 'include'
+    })).to.eq(true);
     expect(fetchStub.calledOnce).to.eq(true);
     expect(fetchStub.getCall(0).lastArg.headers).to.haveOwnProperty("originalurl");
     expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
@@ -307,7 +371,7 @@ describe('Module - Core', () => {
 
     Core.config(JSON.stringify(config));
     const result = Core.renderAsyncFragment('test');
-    
+
     expect(result).to.be.a('promise');
   });
 
@@ -353,7 +417,8 @@ describe('Module - Core', () => {
 
     Core.config(JSON.stringify(config));
     const result = Core.renderAsyncFragment('test');
-    
+
     expect(result).to.be.a('promise');
   });
+
 });
