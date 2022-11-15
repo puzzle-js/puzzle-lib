@@ -148,7 +148,7 @@ export class Core extends Module {
 
   private static fetchGatewayFragment(fragment: IPageFragmentConfig) {
     const queryString = this.prepareQueryString(fragment.attributes);
-    const fragmentRequestUrl = `${fragment.source}${window.location.pathname}${queryString}`;
+    const fragmentRequestUrl = `${fragment.source}${(fragment.attributes.withoutPathname) ? '' : window.location.pathname}${queryString}`;
     return fetch(fragmentRequestUrl, {
       headers: {
         originalurl: window.location.pathname
@@ -236,7 +236,7 @@ export class Core extends Module {
           if (!asset.preLoaded) {
             asset.preLoaded = true;
             asset.defer = true;
-  
+
             if (asset.dependent) {
               asset.dependent.forEach((dependencyName) => {
                 const dependency = Core.__pageConfiguration.dependencies.filter(dependency => dependency.name === dependencyName);
@@ -258,7 +258,7 @@ export class Core extends Module {
                 }
               });
             }
-  
+
             if (loadList.indexOf(asset) === -1) {
               loadList.push(asset);
             }
