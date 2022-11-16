@@ -346,7 +346,7 @@ describe('Module - Core', () => {
     await Core.renderAsyncFragment('test');
     await Core.renderAsyncFragment('test');
 
-    const fragmentRequestUrl = `${source}?__renderMode=stream&if=false&withoutPathname=true`;
+    const fragmentRequestUrl = `${source}/?__renderMode=stream&if=false&withoutPathname=true`;
     expect(fetchStub.calledWith(fragmentRequestUrl, {
       headers: {
         originalurl: window.location.pathname
