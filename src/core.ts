@@ -148,7 +148,7 @@ export class Core extends Module {
 
   private static fetchGatewayFragment(fragment: IPageFragmentConfig) {
     const queryString = this.prepareQueryString(fragment.attributes);
-    const fragmentRequestUrl = `${fragment.source}${(fragment.attributes.withoutPathname) ? '' : window.location.pathname}${queryString}`;
+    const fragmentRequestUrl = `${fragment.source}${(fragment.attributes.withoutPathname) ? '/' : window.location.pathname}${queryString}`;
     return fetch(fragmentRequestUrl, {
       headers: {
         originalurl: window.location.pathname
