@@ -22,6 +22,7 @@ export interface Global {
   document: Document;
   window: Window;
   fetch: any;
+  IntersectionObserver: any;
 }
 
 declare var global: Global;
@@ -29,6 +30,14 @@ declare var global: Global;
 describe('Module - Core', () => {
   beforeEach(() => {
     global.window = (new JSDOM(``, { runScripts: "outside-only" })).window;
+
+    global.IntersectionObserver = Object;
+    global.IntersectionObserver.prototype.observe = sandbox.stub();
+    global.IntersectionObserver.prototype.unobserve = sandbox.stub();
+   
+    global.window.IntersectionObserver = Object;
+    global.window.IntersectionObserverEntry = {};
+    global.window.IntersectionObserverEntry.prototype = { intersectionRatio: sandbox.stub() };
     global.fetch = sandbox.stub().resolves({json: () => {}});
   });
 
@@ -221,6 +230,62 @@ describe('Module - Core', () => {
       }],
       page: 'page',
       peers: []
+    } as IPageLibConfiguration;
+
+    const fragmentContainer = global.window.document.createElement('div');
+    fragmentContainer.setAttribute('puzzle-fragment', 'test');
+    global.window.document.body.appendChild(fragmentContainer);
+
+    const fetchStub = global.fetch as SinonStub;
+    const stubAsyncRenderResponse = sandbox.stub(Core as any, "asyncRenderResponse").resolves();
+
+    Core.config(JSON.stringify(config));
+    await Core.renderAsyncFragment('test');
+    await Core.renderAsyncFragment('test');
+
+    expect(fetchStub.calledOnce).to.eq(true);
+    expect(fetchStub.getCall(0).lastArg.headers).to.haveOwnProperty("originalurl");
+    expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
+  });
+
+  it('should render async fragment with rootMargin', async () => {
+    const assets = [
+      {
+        name: 'bundle1',
+        dependent: ['vendor1'],
+        preLoaded: false,
+        link: 'bundle1.js',
+        fragment: 'test',
+        loadMethod: RESOURCE_LOADING_TYPE.ON_PAGE_RENDER,
+        type: RESOURCE_TYPE.JS
+      }
+    ] as IPageLibAsset[];
+    const dependencies = [
+      {
+        name: 'vendor1',
+        link: 'vendor1.js',
+        preLoaded: false
+      }
+    ] as IPageLibDependency[];
+    const config = {
+      dependencies,
+      assets,
+      fragments: [{
+        name: 'test',
+        attributes: {
+          if: "false"
+        },
+        chunked: true,
+        clientAsync: true,
+        clientAsyncForce: undefined,
+        onDemand: undefined,
+        criticalCss: undefined,
+        source: undefined,
+        asyncDecentralized: false
+      }],
+      page: 'page',
+      peers: [],
+      rootMargin: "500px"
     } as IPageLibConfiguration;
 
     const fragmentContainer = global.window.document.createElement('div');
