@@ -55,6 +55,7 @@ export interface IPageLibConfiguration {
   assets: IPageLibAsset[];
   dependencies: IPageLibDependency[];
   peers: string[];
+  rootMargin: string;
 }
 
 export interface IEventListener {
