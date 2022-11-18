@@ -40,7 +40,7 @@ export class Core extends Module {
     if (this.isIntersectionObserverSupported()) {
       const asyncFragments = fragments.some(i => i.clientAsync);
       
-      if (Core.__pageConfiguration.rootMargin) {
+      if (asyncFragments && Core.__pageConfiguration.rootMargin) {
         this.observer = new IntersectionObserver(this.onIntersection.bind(this), { rootMargin: Core.__pageConfiguration.rootMargin });
       } else if (asyncFragments) {
         this.observer = new IntersectionObserver(this.onIntersection.bind(this));
