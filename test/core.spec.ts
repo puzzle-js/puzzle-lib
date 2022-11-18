@@ -22,6 +22,7 @@ export interface Global {
   document: Document;
   window: Window;
   fetch: any;
+  IntersectionObserver: any;
 }
 
 declare var global: Global;
@@ -29,6 +30,14 @@ declare var global: Global;
 describe('Module - Core', () => {
   beforeEach(() => {
     global.window = (new JSDOM(``, { runScripts: "outside-only" })).window;
+
+    global.IntersectionObserver = Object;
+    global.IntersectionObserver.prototype.observe = sandbox.stub();
+    global.IntersectionObserver.prototype.unobserve = sandbox.stub();
+   
+    global.window.IntersectionObserver = Object;
+    global.window.IntersectionObserverEntry = {};
+    global.window.IntersectionObserverEntry.prototype = { intersectionRatio: sandbox.stub() };
     global.fetch = sandbox.stub().resolves({json: () => {}});
   });
 
