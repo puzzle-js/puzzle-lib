@@ -248,7 +248,7 @@ describe('Module - Core', () => {
     expect(stubAsyncRenderResponse.calledOnce).to.eq(true);
   });
 
-  it('should render async fragment with rootMargin', async () => {
+  it('should render async fragment with intersectionObserverOptions', async () => {
     const assets = [
       {
         name: 'bundle1',
@@ -285,7 +285,9 @@ describe('Module - Core', () => {
       }],
       page: 'page',
       peers: [],
-      rootMargin: "500px"
+      intersectionObserverOptions: { 
+        rootMargin:"500px"
+      }
     } as IPageLibConfiguration;
 
     const fragmentContainer = global.window.document.createElement('div');
