@@ -55,7 +55,7 @@ export interface IPageLibConfiguration {
   assets: IPageLibAsset[];
   dependencies: IPageLibDependency[];
   peers: string[];
-  rootMargin?: string;
+  intersectionObserverOptions?: IntersectionObserverInit;
 }
 
 export interface IEventListener {
