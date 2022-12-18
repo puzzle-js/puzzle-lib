@@ -8,6 +8,7 @@ import * as faker from "faker";
 declare global {
     interface Window {
         PuzzleJs: PuzzleJs;
+        console: any;
     }
 }
 
