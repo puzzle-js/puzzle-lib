@@ -203,7 +203,13 @@ export class Core extends Module {
   }
 
   private static getFragmentContainerSelector(fragment: IPageFragmentConfig, partial: string) {
-    return partial === "main" ? `[puzzle-fragment="${fragment.name}"]:not([fragment-partial])` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${partial}"]`;
+    const query =  partial === "main" ? `[puzzle-fragment="${fragment.name}"]:not([fragment-partial])` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${partial}"]`;
+
+    if (fragment.gateway) {
+      return `[puzzle-gateway="${fragment.gateway}"]${query}`;
+    }
+
+    return query;
   }
 
   private static prepareQueryString(fragmentAttributes: Record<string, string>) {
