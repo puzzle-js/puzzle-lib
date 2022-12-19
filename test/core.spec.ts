@@ -197,6 +197,7 @@ describe('Module - Core', () => {
     const assets = [
       {
         name: 'bundle1',
+        gateway: 'test',
         dependent: ['vendor1'],
         preLoaded: false,
         link: 'bundle1.js',
@@ -234,6 +235,7 @@ describe('Module - Core', () => {
 
     const fragmentContainer = global.window.document.createElement('div');
     fragmentContainer.setAttribute('puzzle-fragment', 'test');
+    fragmentContainer.setAttribute('puzzle-gateway', 'test');
     global.window.document.body.appendChild(fragmentContainer);
 
     const fetchStub = global.fetch as SinonStub;
@@ -252,6 +254,7 @@ describe('Module - Core', () => {
     const assets = [
       {
         name: 'bundle1',
+        gateway: 'test',
         dependent: ['vendor1'],
         preLoaded: false,
         link: 'bundle1.js',
@@ -292,6 +295,7 @@ describe('Module - Core', () => {
 
     const fragmentContainer = global.window.document.createElement('div');
     fragmentContainer.setAttribute('puzzle-fragment', 'test');
+    fragmentContainer.setAttribute('puzzle-gateway', 'test');
     global.window.document.body.appendChild(fragmentContainer);
 
     const fetchStub = global.fetch as SinonStub;
@@ -366,6 +370,7 @@ describe('Module - Core', () => {
     const assets = [
       {
         name: 'bundle1',
+        gateway: 'test',
         dependent: ['vendor1'],
         preLoaded: false,
         link: 'bundle1.js',
@@ -404,6 +409,7 @@ describe('Module - Core', () => {
 
     const fragmentContainer = global.window.document.createElement('div');
     fragmentContainer.setAttribute('puzzle-fragment', 'test');
+    fragmentContainer.setAttribute('puzzle-gateway', 'test');
     global.window.document.body.appendChild(fragmentContainer);
 
     const fetchStub = global.fetch as SinonStub;
