@@ -39,7 +39,7 @@ export class Core extends Module {
 
     if (this.isIntersectionObserverSupported()) {
       const asyncFragments = fragments.some(i => i.clientAsync);
-      
+
       if (asyncFragments && Core.__pageConfiguration.intersectionObserverOptions) {
         this.observer = new IntersectionObserver(this.onIntersection.bind(this), Core.__pageConfiguration.intersectionObserverOptions);
       } else if (asyncFragments) {
@@ -62,8 +62,13 @@ export class Core extends Module {
   }
 
   @on(EVENT.ON_FRAGMENT_RENDERED)
-  static loadAssetsOnFragment(fragmentName: string) {
-    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragmentName && asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER && !asset.preLoaded);
+  static loadAssetsOnFragment(fragmentName: string, containerSelector?: string, replacementContentSelector?: string, gatewayName?: string) {
+    const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(
+      asset => asset.fragment === fragmentName &&
+        ((gatewayName && asset.gateway) ? gatewayName === asset.gateway : true) &&
+        asset.loadMethod === RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER &&
+        !asset.preLoaded
+    );
 
     const assets = Core.createLoadQueue(onFragmentRenderAssets);
 
@@ -74,7 +79,10 @@ export class Core extends Module {
   static pageLoaded() {
     const onFragmentRenderAssets = Core.__pageConfiguration.assets.filter(asset => {
       if (asset.loadMethod === RESOURCE_LOADING_TYPE.ON_PAGE_RENDER && !asset.preLoaded) {
-        const fragment = Core.__pageConfiguration.fragments.find(fragment => fragment.name === asset.fragment);
+        const fragment = Core.__pageConfiguration.fragments.find(
+          _fragment => _fragment.name === asset.fragment &&
+            ((_fragment.gateway && asset.gateway) ? _fragment.gateway === asset.gateway : true)
+        );
         return fragment && fragment.attributes.if !== "false";
       }
       return false;
@@ -176,7 +184,10 @@ export class Core extends Module {
       }
     }
 
-    const fragmentAssets = Core.__pageConfiguration.assets.filter(asset => asset.fragment === fragment.name);
+    const fragmentAssets = Core.__pageConfiguration.assets.filter(
+      asset => asset.fragment === fragment.name &&
+        ((fragment.gateway && asset.gateway) ? fragment.gateway === asset.gateway : true)
+    );
     const assets = Core.createLoadQueue(fragmentAssets, true);
 
     AssetHelper.loadAssetSeries(assets, () => {
@@ -192,7 +203,13 @@ export class Core extends Module {
   }
 
   private static getFragmentContainerSelector(fragment: IPageFragmentConfig, partial: string) {
-    return partial === "main" ? `[puzzle-fragment="${fragment.name}"]:not([fragment-partial])` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${partial}"]`;
+    const query =  partial === "main" ? `[puzzle-fragment="${fragment.name}"]:not([fragment-partial])` : `[puzzle-fragment="${fragment.name}"][fragment-partial="${partial}"]`;
+
+    if (fragment.gateway) {
+      return `[puzzle-gateway="${fragment.gateway}"]${query}`;
+    }
+
+    return query;
   }
 
   private static prepareQueryString(fragmentAttributes: Record<string, string>) {
@@ -232,7 +249,10 @@ export class Core extends Module {
     const loadList: any = [];
 
     assets.forEach(asset => {
-      const fragment = Core.__pageConfiguration.fragments.find(i => i.name === asset.fragment);
+      const fragment = Core.__pageConfiguration.fragments.find(
+        _fragment => _fragment.name === asset.fragment &&
+          ((_fragment.gateway && asset.gateway) ? _fragment.gateway === asset.gateway : true)
+      );
       if (asyncQueue || (fragment && !fragment.clientAsync)) {
         if (asset.type === RESOURCE_TYPE.JS) {
           if (!asset.preLoaded) {
@@ -293,7 +313,11 @@ export class Core extends Module {
       if (change.isIntersecting) {
         const target = change.target;
         const fragmentName = target.getAttribute('puzzle-fragment');
-        const fragment = Core.__pageConfiguration.fragments.find(i => i.name === fragmentName);
+        const gatewayName = target.getAttribute('puzzle-gateway');
+        const fragment = Core.__pageConfiguration.fragments.find(
+            _fragment => _fragment.name === fragmentName &&
+            ((_fragment.gateway && gatewayName) ? _fragment.gateway === gatewayName : true)
+        );
         if (fragment) {
           this.asyncLoadFragment(fragment);
           observer.unobserve(target);
@@ -302,8 +326,11 @@ export class Core extends Module {
     });
   }
 
-  static renderAsyncFragment(fragmentName: string) {
-    const fragment = this.__pageConfiguration.fragments.find(item => item.name === fragmentName);
+  static renderAsyncFragment(fragmentName: string, gatewayName?: string) {
+    const fragment = this.__pageConfiguration.fragments.find(
+      _fragment => _fragment.name === fragmentName &&
+        ((_fragment.gateway && gatewayName) ? _fragment.gateway === gatewayName : true)
+    );
     if (fragment) {
       const selector = this.getFragmentContainerSelector(fragment, "main");
       const fragmentContainer = window.document.querySelector(selector);

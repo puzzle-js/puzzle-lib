@@ -34,7 +34,7 @@ describe('Module - Core', () => {
     global.IntersectionObserver = Object;
     global.IntersectionObserver.prototype.observe = sandbox.stub();
     global.IntersectionObserver.prototype.unobserve = sandbox.stub();
-   
+
     global.window.IntersectionObserver = Object;
     global.window.IntersectionObserverEntry = {};
     global.window.IntersectionObserverEntry.prototype = { intersectionRatio: sandbox.stub() };
@@ -180,6 +180,7 @@ describe('Module - Core', () => {
       assets,
       fragments: [{
         name: 'test',
+        gateway: 'test',
         clientAsync: true
       }],
       page: 'page'
@@ -217,6 +218,7 @@ describe('Module - Core', () => {
       assets,
       fragments: [{
         name: 'test',
+        gateway: 'test',
         attributes: {
           if: "false"
         },
@@ -272,6 +274,7 @@ describe('Module - Core', () => {
       assets,
       fragments: [{
         name: 'test',
+        gateway: 'test',
         attributes: {
           if: "false"
         },
@@ -285,7 +288,7 @@ describe('Module - Core', () => {
       }],
       page: 'page',
       peers: [],
-      intersectionObserverOptions: { 
+      intersectionObserverOptions: {
         rootMargin:"500px"
       }
     } as IPageLibConfiguration;
@@ -330,6 +333,7 @@ describe('Module - Core', () => {
       assets,
       fragments: [{
         name: 'test',
+        gateway: 'test',
         attributes: {
           if: "false"
         },
@@ -386,6 +390,7 @@ describe('Module - Core', () => {
       assets,
       fragments: [{
         name: 'test',
+        gateway: 'test',
         attributes: {
           if: "false",
           withoutPathname: "true"
@@ -466,6 +471,7 @@ describe('Module - Core', () => {
       assets,
       fragments: [{
         name: 'test',
+        gateway: 'test',
         attributes: {
           if: "false"
         },

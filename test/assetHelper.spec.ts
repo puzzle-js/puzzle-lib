@@ -35,6 +35,7 @@ describe('Module - Asset Helper', () => {
         // arrange
         const asset: IPageLibAsset = {
             name: faker.lorem.word(),
+            gateway: faker.lorem.word(),
             loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
             fragment: faker.lorem.word(),
             dependent: [],
@@ -55,6 +56,7 @@ describe('Module - Asset Helper', () => {
         // arrange
         const asset: IPageLibAsset = {
             name: faker.lorem.word(),
+            gateway: faker.lorem.word(),
             loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
             fragment: faker.lorem.word(),
             dependent: [],
@@ -77,6 +79,7 @@ describe('Module - Asset Helper', () => {
         const assets: IPageLibAsset[] = [
             {
                 name: faker.lorem.word(),
+                gateway: faker.lorem.word(),
                 loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
                 fragment: faker.lorem.word(),
                 dependent: [],
@@ -107,6 +110,7 @@ describe('Module - Asset Helper', () => {
         const assets: IPageLibAsset[] = [
             {
                 name: faker.lorem.word(),
+                gateway: faker.lorem.word(),
                 loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
                 fragment: faker.lorem.word(),
                 dependent: [],
@@ -136,6 +140,7 @@ describe('Module - Asset Helper', () => {
         const assets: IPageLibAsset[] = [
             {
                 name: faker.lorem.word(),
+                gateway: faker.lorem.word(),
                 loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
                 fragment: faker.lorem.word(),
                 dependent: [],
@@ -166,6 +171,7 @@ describe('Module - Asset Helper', () => {
         const assets: IPageLibAsset[] = [
             {
                 name: faker.lorem.word(),
+                gateway: faker.lorem.word(),
                 loadMethod: RESOURCE_LOADING_TYPE.ON_FRAGMENT_RENDER,
                 fragment: faker.lorem.word(),
                 dependent: [],
