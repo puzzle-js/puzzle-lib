@@ -326,11 +326,12 @@ export class Core extends Module {
     });
   }
 
-  static renderAsyncFragment(fragmentName: string, gatewayName?: string) {
+  static renderAsyncFragment(fragmentName: string) {
     const fragment = this.__pageConfiguration.fragments.find(
       _fragment => _fragment.name === fragmentName &&
-        ((_fragment.gateway && gatewayName) ? _fragment.gateway === gatewayName : true)
+        ((typeof _fragment.attributes.if === "string") ? _fragment.attributes.if === "true" : true)
     );
+
     if (fragment) {
       const selector = this.getFragmentContainerSelector(fragment, "main");
       const fragmentContainer = window.document.querySelector(selector);
