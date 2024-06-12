@@ -230,7 +230,15 @@ export class Core extends Module {
       return;
     }
 
+    const placeholderElm = e.querySelector(".animate-placeholder");
+
     elm.innerHTML = html;
+
+    if(placeholderElm && html.startsWith("<script>")) {
+      placeholderElm.classList.add("animation-shrink");
+      elm.appendChild(placeholderElm);
+    }
+
     Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
       const newScript = document.createElement("script");
       Array.from(oldScript.attributes)
