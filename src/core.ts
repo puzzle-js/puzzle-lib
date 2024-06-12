@@ -230,7 +230,7 @@ export class Core extends Module {
       return;
     }
 
-    const placeholderElm = e.querySelector(".animate-placeholder");
+    const placeholderElm = elm.querySelector(".animate-placeholder");
 
     elm.innerHTML = html;
 
