@@ -230,13 +230,12 @@ export class Core extends Module {
       return;
     }
 
-    const placeholderElm = elm.querySelector(".animate-placeholder");
-
-    elm.innerHTML = html;
-
-    if(placeholderElm && html.startsWith("<script>")) {
-      placeholderElm.classList.add("animation-shrink");
-      elm.appendChild(placeholderElm);
+    if ((document as any).startViewTransition) {
+      (document as any).startViewTransition(() => {
+        elm.innerHTML = html;
+      });
+    } else {
+      elm.innerHTML = html;
     }
 
     Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
