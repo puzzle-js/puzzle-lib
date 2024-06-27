@@ -230,7 +230,14 @@ export class Core extends Module {
       return;
     }
 
-    elm.innerHTML = html;
+    if ((document as any).startViewTransition) {
+      (document as any).startViewTransition(() => {
+        elm.innerHTML = html;
+      });
+    } else {
+        elm.innerHTML = html;
+    }
+
     Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
       const newScript = document.createElement("script");
       Array.from(oldScript.attributes)
