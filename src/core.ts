@@ -235,7 +235,7 @@ export class Core extends Module {
         elm.innerHTML = html;
       });
     } else {
-      elm.innerHTML = html;
+        elm.innerHTML = html;
     }
 
     Array.from(elm.querySelectorAll("script")).forEach((oldScript: any) => {
