@@ -21,7 +21,7 @@ describe('PuzzleJs Debug Lib', () => {
     });
 
     afterEach(() => {
-        delete global.window;
+        delete (global as { window?: Window }).window;
         PuzzleJs.clearListeners();
     });
 

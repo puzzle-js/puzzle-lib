@@ -42,7 +42,7 @@ describe('Module - Core', () => {
   });
 
   afterEach(() => {
-    delete global.window;
+    delete (global as { window?: Window }).window;
     delete global.fetch;
     PuzzleJs.clearListeners();
     sandbox.verifyAndRestore();
