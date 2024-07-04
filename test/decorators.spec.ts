@@ -1,4 +1,4 @@
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
 import {on} from "../src/decorators";
 import {EVENT} from "../src/enums";
@@ -12,7 +12,7 @@ declare global {
 
 export interface Global {
     document: Document;
-    window: Window;
+    window: DOMWindow;
 }
 
 declare var global: Global;
@@ -23,7 +23,7 @@ describe('PuzzleLib Decorators', () => {
     });
 
     afterEach(() => {
-        delete (global as { window?: Window }).window;
+        delete (global as { window?: DOMWindow }).window;
         PuzzleJs.clearListeners();
     });
 

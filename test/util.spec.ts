@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 import {Util} from "../src/util";
 import {PuzzleJs} from "../src/puzzle";
 import sinon from "sinon";
@@ -14,7 +14,7 @@ declare global {
 
 export interface Global {
     document: Document;
-    window: Window;
+    window: DOMWindow;
 }
 
 declare var global: Global;
@@ -25,7 +25,7 @@ describe('Module - Util', () => {
     });
 
     afterEach(() => {
-        delete (global as { window?: Window }).window;
+        delete (global as { window?: DOMWindow }).window;
         PuzzleJs.clearListeners();
     });
 

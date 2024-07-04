@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
 import sinon from "sinon";
 import {Analytics} from "../src/modules/analytics";
@@ -12,7 +12,7 @@ declare global {
 
 export interface Global {
     document: Document;
-    window: Window;
+    window: DOMWindow;
 }
 
 declare var global: Global;
@@ -24,7 +24,7 @@ describe('Module - Fragments', () => {
 
     afterEach(() => {
         sinon.restore();
-        delete (global as { window?: Window }).window;
+        delete (global as { window?: DOMWindow }).window;
         PuzzleJs.clearListeners();
     });
 

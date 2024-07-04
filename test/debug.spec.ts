@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import {PuzzleJs} from "../src/puzzle";
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 
 declare global {
     interface Window {
@@ -10,7 +10,7 @@ declare global {
 
 export interface Global {
     document: Document;
-    window: Window;
+    window: DOMWindow;
 }
 
 declare var global: Global;
@@ -21,7 +21,7 @@ describe('PuzzleJs Debug Lib', () => {
     });
 
     afterEach(() => {
-        delete (global as { window?: Window }).window;
+        delete (global as { window?: DOMWindow }).window;
         PuzzleJs.clearListeners();
     });
 

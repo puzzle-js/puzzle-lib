@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
 import {EVENT} from "../src/enums";
 import sinon from "sinon";
@@ -7,7 +7,7 @@ import * as faker from "faker";
 
 export interface Global {
     document: Document;
-    window: Window;
+    window: DOMWindow;
 }
 
 declare var global: Global;
@@ -18,7 +18,7 @@ describe('PuzzleJs', () => {
     });
 
     afterEach(() => {
-        delete (global as { window?: Window }).window;
+        delete (global as { window?: DOMWindow }).window;
         PuzzleJs.clearListeners();
     });
 
