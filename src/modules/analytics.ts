@@ -42,7 +42,7 @@ export class Analytics extends Module {
       }, {});
       Util.table(fragmentsTableData);
 
-      if (window.performance && performance.getEntriesByType) {
+      if ('performance' in window && 'getEntriesByType' in window.performance) {
         const performance = window.performance;
         const performanceEntries = performance.getEntriesByType('paint');
         performanceEntries.forEach((performanceEntry, i, entries) => {
