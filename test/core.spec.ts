@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {JSDOM} from "jsdom";
+import {DOMWindow, JSDOM} from "jsdom";
 import {PuzzleJs} from "../src/puzzle";
 import {Core} from "../src/core";
 import {createPageLibConfiguration} from "./mock";
@@ -20,7 +20,7 @@ declare global {
 
 export interface Global {
   document: Document;
-  window: Window;
+  window: DOMWindow;
   fetch: any;
   IntersectionObserver: any;
 }
@@ -42,7 +42,7 @@ describe('Module - Core', () => {
   });
 
   afterEach(() => {
-    delete (global as { window?: Window }).window;
+    delete (global as { window?: DOMWindow }).window;
     delete global.fetch;
     PuzzleJs.clearListeners();
     sandbox.verifyAndRestore();
@@ -76,7 +76,7 @@ describe('Module - Core', () => {
     expect(window[variableName]).to.deep.eq(windowModel);
   });
 
-  it('should load fragment and replace its contents', function () {
+  it('should load fragment and replace its contents', () => {
     const fragmentName = faker.random.word();
     const fragmentContent = faker.random.words();
     const fragmentContainerId = "fragment-container";
@@ -94,7 +94,7 @@ describe('Module - Core', () => {
     expect(global.window.document.body.innerHTML).to.eq(`<div id="${fragmentContainerId}">${fragmentContent}</div>`);
   });
 
-  it('should create true load queue for js and css assets', function () {
+  it('should create true load queue for js and css assets', () => {
     const assets = [
       {
         name: 'bundle1',
@@ -156,7 +156,7 @@ describe('Module - Core', () => {
       ]);
   });
 
-  it('should create true load queue for js assets excluding async', function () {
+  it('should create true load queue for js assets excluding async', () => {
     const assets = [
       {
         name: 'bundle1',
